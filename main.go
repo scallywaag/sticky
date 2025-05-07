@@ -1,8 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
+	"log"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
 type flags struct {
@@ -10,6 +14,48 @@ type flags struct {
 	get  int
 	list bool
 	del  int
+}
+
+type note struct {
+	id      int
+	content string
+}
+
+func add(content string, db *sql.DB) {
+	stmt, err := db.Prepare(`
+		INSERT INTO notes(id, content)
+		VALUES(NULL, ?)
+	`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(content)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Note successfully added.")
+}
+
+func get(id int, db *sql.DB) {
+	stmt, err := db.Prepare(`
+		SELECT id, content FROM notes
+		WHERE id = ?
+	`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	n := note{}
+	err = stmt.QueryRow(id).Scan(&n.id, &n.content)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("id: %d - content: %s\n", n.id, n.content)
 }
 
 func main() {
@@ -20,11 +66,29 @@ func main() {
 	flag.IntVar(&f.del, "del", 0, "delete a note by id")
 	flag.Parse()
 
+	db, err := sql.Open("sqlite3", "sticky.sqlite")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	stmt := `
+	CREATE TABLE IF NOT EXISTS notes (
+		id integer NOT NULL PRIMARY KEY,
+		content TEXT
+	);
+	`
+
+	_, err = db.Exec(stmt)
+	if err != nil {
+		log.Printf("%q: %s\n", err, stmt)
+	}
+
 	switch {
 	case f.add != "":
-		fmt.Println("flag add")
+		add(f.add, db)
 	case f.get != 0:
-		fmt.Println("flag get")
+		get(f.get, db)
 	case f.list:
 		fmt.Println("flag list")
 	case f.del != 0:
