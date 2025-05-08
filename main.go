@@ -85,6 +85,21 @@ func list(db *sql.DB) {
 	}
 }
 
+func del(id int, db *sql.DB) {
+	stmt, err := db.Prepare(`DELETE FROM notes WHERE id = ?`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Println("Note successfully deleted.")
+}
+
 func main() {
 	f := new(flags)
 	flag.StringVar(&f.add, "add", "", "add a note")
@@ -119,7 +134,7 @@ func main() {
 	case f.list:
 		list(db)
 	case f.del != 0:
-		fmt.Println("flag del")
+		del(f.del, db)
 	default:
 		list(db)
 	}
