@@ -58,6 +58,33 @@ func get(id int, db *sql.DB) {
 	fmt.Printf("id: %d - content: %s\n", n.id, n.content)
 }
 
+func list(db *sql.DB) {
+	stmt, err := db.Prepare(`SELECT id, content FROM notes`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		n := note{}
+		err = rows.Scan(&n.id, &n.content)
+		if err != nil {
+			log.Fatal()
+		}
+		fmt.Printf("id: %d - content: %s\n", n.id, n.content)
+	}
+
+	if err = rows.Err(); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
 	f := new(flags)
 	flag.StringVar(&f.add, "add", "", "add a note")
@@ -90,10 +117,10 @@ func main() {
 	case f.get != 0:
 		get(f.get, db)
 	case f.list:
-		fmt.Println("flag list")
+		list(db)
 	case f.del != 0:
 		fmt.Println("flag del")
 	default:
-		fmt.Println("default - flag list")
+		list(db)
 	}
 }
