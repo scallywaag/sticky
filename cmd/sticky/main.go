@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"example/sticky/internal/flags"
+	"example/sticky/internal/persistence"
 	"fmt"
 	"log"
 
@@ -96,23 +97,8 @@ func del(id int, db *sql.DB) {
 func main() {
 	f := flags.Parse()
 
-	db, err := sql.Open("sqlite3", "sticky.sqlite")
-	if err != nil {
-		log.Fatal(err)
-	}
+	db := persistence.InitDb()
 	defer db.Close()
-
-	stmt := `
-	CREATE TABLE IF NOT EXISTS notes (
-		id integer NOT NULL PRIMARY KEY,
-		content TEXT
-	);
-	`
-
-	_, err = db.Exec(stmt)
-	if err != nil {
-		log.Printf("%q: %s\n", err, stmt)
-	}
 
 	switch {
 	case f.Add != "":
