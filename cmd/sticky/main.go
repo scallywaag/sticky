@@ -4,6 +4,7 @@ import (
 	"example/sticky/internal/database"
 	"example/sticky/internal/flags"
 	"example/sticky/internal/notes"
+	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -16,13 +17,25 @@ func main() {
 
 	switch {
 	case f.Add != "":
-		notes.Add(f.Add, db)
+		err := notes.Add(f.Add, db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	case f.Get != 0:
-		notes.Get(f.Get, db)
+		err := notes.Get(f.Get, db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	case f.List:
-		notes.List(db)
+		err := notes.List(db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	case f.Del != 0:
-		notes.Del(f.Del, db)
+		err := notes.Del(f.Del, db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	default:
 		notes.List(db)
 	}
