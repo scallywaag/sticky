@@ -2,19 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"flag"
+	"example/sticky/internal/flags"
 	"fmt"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"
 )
-
-type flags struct {
-	add  string
-	get  int
-	list bool
-	del  int
-}
 
 type note struct {
 	id      int
@@ -101,12 +94,7 @@ func del(id int, db *sql.DB) {
 }
 
 func main() {
-	f := new(flags)
-	flag.StringVar(&f.add, "add", "", "add a note")
-	flag.IntVar(&f.get, "get", 0, "get a note by id")
-	flag.BoolVar(&f.list, "list", false, "list all notes")
-	flag.IntVar(&f.del, "del", 0, "delete a note by id")
-	flag.Parse()
+	f := flags.Parse()
 
 	db, err := sql.Open("sqlite3", "sticky.sqlite")
 	if err != nil {
@@ -127,14 +115,14 @@ func main() {
 	}
 
 	switch {
-	case f.add != "":
-		add(f.add, db)
-	case f.get != 0:
-		get(f.get, db)
-	case f.list:
+	case f.Add != "":
+		add(f.Add, db)
+	case f.Get != 0:
+		get(f.Get, db)
+	case f.List:
 		list(db)
-	case f.del != 0:
-		del(f.del, db)
+	case f.Del != 0:
+		del(f.Del, db)
 	default:
 		list(db)
 	}
