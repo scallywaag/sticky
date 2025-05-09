@@ -1,6 +1,7 @@
 package notes
 
 type Note struct {
-	Id      int
-	Content string
+	Id        int
+	VirtualId int
+	Content   string
 }

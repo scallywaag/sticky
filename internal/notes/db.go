@@ -28,8 +28,15 @@ func Add(content string, db *sql.DB) error {
 
 func Get(id int, db *sql.DB) error {
 	stmt, err := db.Prepare(`
-		SELECT id, content FROM notes
-		WHERE id = ?
+		WITH ordered_notes AS (
+			SELECT
+				ROW_NUMBER() OVER (ORDER by id) AS virtual_id,
+				content
+			FROM notes
+		)
+		SELECT virtual_id, content
+		FROM ordered_notes
+		WHERE virtual_id = ?
 	`)
 	if err != nil {
 		return err
@@ -37,17 +44,26 @@ func Get(id int, db *sql.DB) error {
 	defer stmt.Close()
 
 	n := Note{}
-	err = stmt.QueryRow(id).Scan(&n.Id, &n.Content)
+	err = stmt.QueryRow(id).Scan(&n.VirtualId, &n.Content)
 	if err != nil {
 		return err
 	}
 
-	f.Print(n.Content, n.Id, 11)
+	f.Print(n.Content, n.VirtualId, 11)
 	return nil
 }
 
 func List(db *sql.DB) error {
-	stmt, err := db.Prepare(`SELECT id, content FROM notes`)
+	stmt, err := db.Prepare(`
+		WITH ordered_notes AS (
+			SELECT
+				ROW_NUMBER() OVER (ORDER by id) AS virtual_id,
+				content
+			FROM notes
+		)
+		SELECT virtual_id, content
+		FROM ordered_notes
+	`)
 	if err != nil {
 		return err
 	}
@@ -61,11 +77,11 @@ func List(db *sql.DB) error {
 
 	for rows.Next() {
 		n := Note{}
-		err = rows.Scan(&n.Id, &n.Content)
+		err = rows.Scan(&n.VirtualId, &n.Content)
 		if err != nil {
 			log.Fatal()
 		}
-		f.Print(n.Content, n.Id, 11)
+		f.Print(n.Content, n.VirtualId, 11)
 	}
 
 	if err = rows.Err(); err != nil {
