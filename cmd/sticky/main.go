@@ -17,7 +17,7 @@ func main() {
 
 	switch {
 	case f.Add != "":
-		err := notes.Add(f.Add, db)
+		err := notes.Add(f.Add, notes.TypeMisc, "", db)
 		if err != nil {
 			log.Fatal(err)
 		}
