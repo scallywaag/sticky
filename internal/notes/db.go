@@ -7,17 +7,24 @@ import (
 	"log"
 )
 
-func Add(content string, db *sql.DB) error {
+func Add(content string, noteType NoteType, noteStatus NoteStatus, db *sql.DB) error {
 	stmt, err := db.Prepare(`
-		INSERT INTO notes(id, content)
-		VALUES(NULL, ?)
+		INSERT INTO notes(id, content, type, status)
+		VALUES(NULL, ?, ?, ?)
 	`)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(content)
+	var ns sql.NullString
+	if noteType != TypeTodo {
+		ns = sql.NullString{String: string(noteStatus), Valid: true}
+	} else {
+		ns = sql.NullString{Valid: false}
+	}
+
+	_, err = stmt.Exec(content, noteType, ns)
 	if err != nil {
 		return err
 	}
@@ -31,10 +38,12 @@ func Get(id int, db *sql.DB) error {
 		WITH ordered_notes AS (
 			SELECT
 				ROW_NUMBER() OVER (ORDER by id) AS virtual_id,
-				content
+				content,
+				type,
+				status
 			FROM notes
 		)
-		SELECT virtual_id, content
+		SELECT virtual_id, content, type, status
 		FROM ordered_notes
 		WHERE virtual_id = ?
 	`)
@@ -44,7 +53,7 @@ func Get(id int, db *sql.DB) error {
 	defer stmt.Close()
 
 	n := Note{}
-	err = stmt.QueryRow(id).Scan(&n.VirtualId, &n.Content)
+	err = stmt.QueryRow(id).Scan(&n.VirtualId, &n.Content, &n.Type, &n.Status)
 	if err != nil {
 		return err
 	}
@@ -58,10 +67,12 @@ func List(db *sql.DB) error {
 		WITH ordered_notes AS (
 			SELECT
 				ROW_NUMBER() OVER (ORDER by id) AS virtual_id,
-				content
+				content,
+				type,
+				status
 			FROM notes
 		)
-		SELECT virtual_id, content
+		SELECT virtual_id, content, type, status
 		FROM ordered_notes
 	`)
 	if err != nil {
@@ -77,7 +88,7 @@ func List(db *sql.DB) error {
 
 	for rows.Next() {
 		n := Note{}
-		err = rows.Scan(&n.VirtualId, &n.Content)
+		err = rows.Scan(&n.VirtualId, &n.Content, &n.Type, &n.Status)
 		if err != nil {
 			log.Fatal()
 		}
