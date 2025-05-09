@@ -15,8 +15,8 @@ func InitDb() *sql.DB {
 	CREATE TABLE IF NOT EXISTS notes (
 		id integer NOT NULL PRIMARY KEY,
 		content TEXT,
-		type TEXT,
-		status TEXT
+		type TEXT DEFAULT 'misc',
+		status TEXT DEFAULT NULL
 	);
 	`
 
