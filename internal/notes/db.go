@@ -91,7 +91,16 @@ func List(db *sql.DB) error {
 }
 
 func Del(id int, db *sql.DB) error {
-	stmt, err := db.Prepare(`DELETE FROM notes WHERE id = ?`)
+	stmt, err := db.Prepare(`
+		WITH ordered_notes AS (
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY id) as virtual_id,
+				id
+			FROM notes
+		)
+		DELETE FROM notes
+		WHERE id = (SELECT id FROM ordered_notes WHERE virtual_id = ?)
+	`)
 	if err != nil {
 		return err
 	}
