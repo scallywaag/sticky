@@ -134,3 +134,39 @@ func Del(id int, db *sql.DB) error {
 	fmt.Println("Note successfully deleted.")
 	return nil
 }
+
+func UpdateTodo(id int, status NoteStatus, db *sql.DB) error {
+	stmt, err := db.Prepare(`
+		WITH ordered_notes AS (
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY id) as virtual_id,
+				id,
+				type
+			FROM notes
+		)
+		UPDATE notes
+		SET status = ?
+		WHERE id = (SELECT id FROM ordered_notes WHERE virtual_id = ? AND type = 'todo')
+	`)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	res, err := stmt.Exec(status, id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("no update performed: note not found or type not 'todo'")
+	}
+
+	fmt.Println("Note successfully updated.")
+	return nil
+}

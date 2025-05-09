@@ -39,6 +39,16 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	case f.Done != 0:
+		err := notes.UpdateTodo(f.Done, notes.StatusDone, db)
+		if err != nil {
+			log.Fatal(err)
+		}
+	case f.Cross != 0:
+		err := notes.UpdateTodo(f.Cross, notes.StatusCanceled, db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	default:
 		notes.List(db)
 	}
