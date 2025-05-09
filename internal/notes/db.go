@@ -52,8 +52,17 @@ func Get(id int, db *sql.DB) error {
 	}
 	defer stmt.Close()
 
+	var statusStr sql.NullString
 	n := Note{}
-	err = stmt.QueryRow(id).Scan(&n.VirtualId, &n.Content, &n.Type, &n.Status)
+
+	err = stmt.QueryRow(id).Scan(&n.VirtualId, &n.Content, &n.Type, &statusStr)
+
+	if statusStr.Valid {
+		n.Status = NoteStatus(statusStr.String)
+	} else {
+		n.Status = ""
+	}
+
 	if err != nil {
 		return err
 	}
@@ -87,9 +96,9 @@ func List(db *sql.DB) error {
 	defer rows.Close()
 
 	for rows.Next() {
+		var statusStr sql.NullString
 		n := Note{}
 
-		var statusStr sql.NullString
 		err = rows.Scan(&n.VirtualId, &n.Content, &n.Type, &statusStr)
 
 		if statusStr.Valid {
