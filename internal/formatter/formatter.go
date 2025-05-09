@@ -13,16 +13,12 @@ func Print(content string, curr int, last int) {
 	fmt.Printf("%s", ps)
 }
 
-func getPadDiff(a string, b string) int {
-	la := len(a)
-	lb := len(b)
-	diff := 0
-
-	if la < lb {
-		diff = lb - la
+func getPadDiff(a, b string) int {
+	if len(a) < len(b) {
+		return len(b) - len(a)
 	}
 
-	return diff
+	return 0
 }
 
 func leftPad(s string, l int) string {
