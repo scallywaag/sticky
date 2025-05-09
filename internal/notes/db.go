@@ -37,7 +37,7 @@ func Get(id int, db *sql.DB) error {
 	stmt, err := db.Prepare(`
 		WITH ordered_notes AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER by id) AS virtual_id,
+				ROW_NUMBER() OVER (ORDER BY id) AS virtual_id,
 				content,
 				type,
 				status
@@ -75,7 +75,18 @@ func List(db *sql.DB) error {
 	stmt, err := db.Prepare(`
 		WITH ordered_notes AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER by id) AS virtual_id,
+				ROW_NUMBER() OVER (
+					ORDER BY
+						CASE
+							WHEN type = 'pin' THEN 1
+							WHEN type = 'todo' AND status = 'active' THEN 2
+							WHEN type = 'misc' THEN 3
+							WHEN type = 'todo' AND status = 'done' THEN 4
+							WHEN type = 'todo' AND status = 'canceled' THEN 5
+							ELSE 6
+						END,
+						id
+				) AS virtual_id,
 				content,
 				type,
 				status
@@ -85,12 +96,14 @@ func List(db *sql.DB) error {
 		FROM ordered_notes
 	`)
 	if err != nil {
+		log.Fatal(err)
 		return err
 	}
 	defer stmt.Close()
 
 	rows, err := stmt.Query()
 	if err != nil {
+		log.Fatal(err)
 		return err
 	}
 	defer rows.Close()
