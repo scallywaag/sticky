@@ -18,7 +18,9 @@ func main() {
 
 	switch {
 	case f.Add != "":
-		err := notes.Add(f.Add, notes.TypeMisc, "", db)
+		t := flags.GetNoteType(f)
+		s := flags.GetNoteStatus(f)
+		err := notes.Add(f.Add, t, s, db)
 		if err != nil {
 			log.Fatal(err)
 		}
