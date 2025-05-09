@@ -1,6 +1,7 @@
 package flags
 
 import (
+	"example/sticky/internal/notes"
 	"flag"
 	"fmt"
 	"os"
@@ -70,4 +71,28 @@ func ValidateFlags(f *Flags) {
 		fmt.Println("Error: can only use one of --done or --cross.")
 		os.Exit(1)
 	}
+}
+
+func GetNoteType(f *Flags) notes.NoteType {
+	if f.Pin {
+		return notes.TypePin
+	}
+
+	if f.Todo {
+		return notes.TypeTodo
+	}
+
+	return notes.TypeMisc
+}
+
+func GetNoteStatus(f *Flags) notes.NoteStatus {
+	if f.Done > 0 {
+		return notes.StatusDone
+	}
+
+	if f.Cross > 0 {
+		return notes.StatusCanceled
+	}
+
+	return notes.StatusActive
 }
