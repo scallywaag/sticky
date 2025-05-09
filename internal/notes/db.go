@@ -2,6 +2,7 @@ package notes
 
 import (
 	"database/sql"
+	f "example/sticky/internal/formatter"
 	"fmt"
 	"log"
 )
@@ -41,7 +42,7 @@ func Get(id int, db *sql.DB) error {
 		return err
 	}
 
-	fmt.Printf("id: %d - content: %s\n", n.Id, n.Content)
+	f.Print(n.Content, n.Id, 11)
 	return nil
 }
 
@@ -64,7 +65,7 @@ func List(db *sql.DB) error {
 		if err != nil {
 			log.Fatal()
 		}
-		fmt.Printf("id: %d - content: %s\n", n.Id, n.Content)
+		f.Print(n.Content, n.Id, 11)
 	}
 
 	if err = rows.Err(); err != nil {
