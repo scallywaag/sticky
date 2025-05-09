@@ -11,6 +11,7 @@ import (
 
 func main() {
 	f := flags.Parse()
+	flags.ValidateFlags(f)
 
 	db := database.InitDb()
 	defer db.Close()
