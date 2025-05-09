@@ -1,6 +1,10 @@
 package flags
 
-import "flag"
+import (
+	"flag"
+	"fmt"
+	"os"
+)
 
 type Flags struct {
 	Add   string
@@ -29,4 +33,41 @@ func Parse() *Flags {
 	flag.Parse()
 
 	return f
+}
+
+func ValidateFlags(f *Flags) {
+	opCount := 0
+	if f.Add != "" {
+		opCount++
+	}
+	if f.Get > 0 {
+		opCount++
+	}
+	if f.List {
+		opCount++
+	}
+	if f.Del > 0 {
+		opCount++
+	}
+	if f.Done > 0 {
+		opCount++
+	}
+	if f.Cross > 0 {
+		opCount++
+	}
+
+	if opCount > 1 {
+		fmt.Println("Error: only one of --add, --get, --list, --del, --done, --cross can be used at a time.")
+		os.Exit(1)
+	}
+
+	if (f.Pin || f.Todo) && f.Add == "" {
+		fmt.Println("Error: --pin and --todo can only be used with --add.")
+		os.Exit(1)
+	}
+
+	if f.Done > 0 && f.Cross > 0 {
+		fmt.Println("Error: can only use one of --done or --cross.")
+		os.Exit(1)
+	}
 }
