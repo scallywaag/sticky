@@ -18,7 +18,7 @@ func Add(content string, noteType NoteType, noteStatus NoteStatus, db *sql.DB) e
 	defer stmt.Close()
 
 	var ns sql.NullString
-	if noteType != TypeTodo {
+	if noteType == TypeTodo {
 		ns = sql.NullString{String: string(noteStatus), Valid: true}
 	} else {
 		ns = sql.NullString{Valid: false}
@@ -88,7 +88,16 @@ func List(db *sql.DB) error {
 
 	for rows.Next() {
 		n := Note{}
-		err = rows.Scan(&n.VirtualId, &n.Content, &n.Type, &n.Status)
+
+		var statusStr sql.NullString
+		err = rows.Scan(&n.VirtualId, &n.Content, &n.Type, &statusStr)
+
+		if statusStr.Valid {
+			n.Status = NoteStatus(statusStr.String)
+		} else {
+			n.Status = ""
+		}
+
 		if err != nil {
 			log.Fatal()
 		}
