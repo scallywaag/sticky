@@ -1,9 +1,9 @@
 package main
 
 import (
-	"example/sticky/internal/database"
-	"example/sticky/internal/flags"
-	"example/sticky/internal/notes"
+	"github.com/scallywaag/sticky/internal/database"
+	"github.com/scallywaag/sticky/internal/flags"
+	"github.com/scallywaag/sticky/internal/notes"
 	"log"
 
 	_ "github.com/mattn/go-sqlite3"

@@ -1,4 +1,4 @@
-module example/sticky
+module github.com/scallywaag/sticky
 
 go 1.24.3
 

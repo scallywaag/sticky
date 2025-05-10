@@ -2,8 +2,8 @@ package notes
 
 import (
 	"database/sql"
-	f "example/sticky/internal/formatter"
 	"fmt"
+	f "github.com/scallywaag/sticky/internal/formatter"
 	"log"
 )
 

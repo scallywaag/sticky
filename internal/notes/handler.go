@@ -1,7 +1,7 @@
 package notes
 
 import (
-	"example/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 func noteColor(noteType NoteType, noteStatus NoteStatus) string {

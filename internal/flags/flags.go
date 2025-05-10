@@ -1,9 +1,9 @@
 package flags
 
 import (
-	"example/sticky/internal/notes"
 	"flag"
 	"fmt"
+	"github.com/scallywaag/sticky/internal/notes"
 	"os"
 )
 
