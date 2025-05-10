@@ -37,7 +37,18 @@ func Get(id int, db *sql.DB) error {
 	stmt, err := db.Prepare(`
 		WITH ordered_notes AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER BY id) AS virtual_id,
+				ROW_NUMBER() OVER (
+					ORDER BY
+						CASE
+							WHEN type = 'pin' THEN 1
+							WHEN type = 'todo' AND status = 'active' THEN 2
+							WHEN type = 'misc' THEN 3
+							WHEN type = 'todo' AND status = 'done' THEN 4
+							WHEN type = 'todo' AND status = 'canceled' THEN 5
+							ELSE 6
+						END,
+						id
+				) AS virtual_id,
 				content,
 				type,
 				status
@@ -67,7 +78,8 @@ func Get(id int, db *sql.DB) error {
 		return err
 	}
 
-	f.Print(n.Content, n.VirtualId, 11)
+	color := noteColor(n.Type, n.Status)
+	f.Print(n.Content, n.VirtualId, 11, color)
 	return nil
 }
 
@@ -123,7 +135,9 @@ func List(db *sql.DB) error {
 		if err != nil {
 			log.Fatal()
 		}
-		f.Print(n.Content, n.VirtualId, 11)
+
+		color := noteColor(n.Type, n.Status)
+		f.Print(n.Content, n.VirtualId, 11, color)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -136,7 +150,18 @@ func Del(id int, db *sql.DB) error {
 	stmt, err := db.Prepare(`
 		WITH ordered_notes AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER BY id) as virtual_id,
+				ROW_NUMBER() OVER (
+					ORDER BY
+						CASE
+							WHEN type = 'pin' THEN 1
+							WHEN type = 'todo' AND status = 'active' THEN 2
+							WHEN type = 'misc' THEN 3
+							WHEN type = 'todo' AND status = 'done' THEN 4
+							WHEN type = 'todo' AND status = 'canceled' THEN 5
+							ELSE 6
+						END,
+						id
+				) AS virtual_id,
 				id
 			FROM notes
 		)
@@ -161,7 +186,18 @@ func UpdateTodo(id int, status NoteStatus, db *sql.DB) error {
 	stmt, err := db.Prepare(`
 		WITH ordered_notes AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER BY id) as virtual_id,
+				ROW_NUMBER() OVER (
+					ORDER BY
+						CASE
+							WHEN type = 'pin' THEN 1
+							WHEN type = 'todo' AND status = 'active' THEN 2
+							WHEN type = 'misc' THEN 3
+							WHEN type = 'todo' AND status = 'done' THEN 4
+							WHEN type = 'todo' AND status = 'canceled' THEN 5
+							ELSE 6
+						END,
+						id
+				) AS virtual_id,
 				id,
 				type
 			FROM notes
