@@ -3,6 +3,7 @@ package formatter
 import (
 	"fmt"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -29,12 +30,6 @@ func getPadDiff(a, b string) int {
 	return 0
 }
 
-func leftPad(s string, l int) string {
-	ps := ""
-
-	for range l {
-		ps += " "
-	}
-
-	return ps + s
+func leftPad(str string, spaces int) string {
+	return strings.Repeat(" ", spaces) + str
 }
