@@ -56,3 +56,21 @@ func Add(content string, db *sql.DB) error {
 	fmt.Println("Note successfully added.")
 	return nil
 }
+
+func Del(id int, db *sql.DB) error {
+	stmt, err := db.Prepare(`
+		DELETE FROM notes WHERE id = ?
+	`)
+	if err != nil {
+		return fmt.Errorf("prepare failed: %w", err)
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(id)
+	if err != nil {
+		return fmt.Errorf("prepare failed: %w", err)
+	}
+
+	fmt.Println("Note successfully deleted.")
+	return nil
+}

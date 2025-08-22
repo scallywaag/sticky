@@ -27,6 +27,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	case f.Del != 0:
+		err := notes.Del(f.Del, db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	default:
 		notes.List(db)
 	}
