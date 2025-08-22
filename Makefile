@@ -1,7 +1,7 @@
 APP_NAME=sticky
 CMD_DIR=./cmd/sticky
 
-.PHONY: run build install clean
+.PHONY: run build install clean purge
 
 # Run the app without building
 run:
@@ -18,3 +18,7 @@ install:
 # Clean build artifacts
 clean:
 	rm -rf bin
+
+purge:
+	rm ~/.local/share/sticky/sticky.db
+
