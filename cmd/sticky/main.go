@@ -33,6 +33,9 @@ func main() {
 			log.Fatal(err)
 		}
 	default:
-		notes.List(db)
+		err := notes.List(db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
