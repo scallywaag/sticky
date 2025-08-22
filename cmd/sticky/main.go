@@ -16,5 +16,6 @@ func main() {
 	defer db.Close()
 
 	notes.Add("test string", db)
-	notes.Get(1, db)
+	notes.Add("some more testing", db)
+	notes.List(db)
 }
