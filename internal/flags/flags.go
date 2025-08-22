@@ -11,9 +11,9 @@ type Flags struct {
 	List string
 	Add  string
 	Del  int
+	Mut  int
 
 	// mutations
-	Mut    int
 	Pin    bool
 	Cross  bool
 	Red    bool
@@ -28,8 +28,8 @@ func Parse() *Flags {
 	flag.StringVar(&f.List, "l", "", "list all notes")
 	flag.StringVar(&f.Add, "a", "", "add a note")
 	flag.IntVar(&f.Del, "d", 0, "delete a note by id")
-
 	flag.IntVar(&f.Mut, "m", 0, "mutate note - pin, cross or format color")
+
 	flag.BoolVar(&f.Pin, "p", false, "pin note - send to top of list (toggle)")
 	flag.BoolVar(&f.Cross, "c", false, "cross note - send to bottom of list (toggle)")
 	flag.BoolVar(&f.Red, "r", false, "color the note red")
@@ -43,9 +43,9 @@ func Parse() *Flags {
 		fmt.Fprintf(os.Stderr, "  -l <listname> string\n\tlist all notes from <listname>\n")
 		fmt.Fprintf(os.Stderr, "  -a <content> string\n\tadd note <content>\n")
 		fmt.Fprintf(os.Stderr, "  -d <id> int\n\tdelete note by <id>\n")
-
-		fmt.Fprintf(os.Stderr, "\n* mutations\n\tuseable with -m flag or when adding a new note\n")
 		fmt.Fprintf(os.Stderr, "  -m <id> int\n\tmutate existing note <id>\n")
+
+		fmt.Fprintf(os.Stderr, "\n* mutations\n\tuseable with -a or -m flag\n")
 		fmt.Fprintf(os.Stderr, "  -p bool\n\tpin note - send to top of list (toggle)\n")
 		fmt.Fprintf(os.Stderr, "  -c bool\n\tcross note - send to bottom of list (toggle)\n")
 		fmt.Fprintf(os.Stderr, "  -r bool\n\tcolor note red\n")
