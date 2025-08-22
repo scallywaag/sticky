@@ -8,33 +8,33 @@ type Flags struct {
 	// operations
 	List string
 	Add  string
-	Del  string
+	Del  int
 
 	// mutations
-	Pin   string
-	Cross string
+	Pin   int
+	Cross int
 
 	// formatting
-	Red    string
-	Green  string
-	Yellow string
-	Blue   string
+	Red    bool
+	Green  bool
+	Yellow bool
+	Blue   bool
 }
 
 func Parse() *Flags {
 	f := &Flags{}
 
-	flag.StringVar(&f.List, "list", "", "list all notes")
-	flag.StringVar(&f.Add, "add", "", "add a note")
-	flag.StringVar(&f.Del, "del", "", "delete a note by id")
+	flag.StringVar(&f.List, "l", "", "list all notes")
+	flag.StringVar(&f.Add, "a", "", "add a note")
+	flag.IntVar(&f.Del, "d", 0, "delete a note by id")
 
-	flag.StringVar(&f.Pin, "pin", "", "pin note - send to top of list (toggle)")
-	flag.StringVar(&f.Cross, "cross", "", "cross note - send to bottom of list (toggle)")
+	flag.IntVar(&f.Pin, "p", 0, "pin note - send to top of list (toggle)")
+	flag.IntVar(&f.Cross, "c", 0, "cross note - send to bottom of list (toggle)")
 
-	flag.StringVar(&f.Red, "red", "", "color the note red")
-	flag.StringVar(&f.Green, "green", "", "color the note green")
-	flag.StringVar(&f.Yellow, "yellow", "", "color the note yellow")
-	flag.StringVar(&f.Blue, "blue", "", "color the note blue")
+	flag.BoolVar(&f.Red, "r", false, "color the note red")
+	flag.BoolVar(&f.Green, "g", false, "color the note green")
+	flag.BoolVar(&f.Blue, "b", false, "color the note blue")
+	flag.BoolVar(&f.Yellow, "y", false, "color the note yellow")
 
 	flag.Parse()
 
