@@ -63,8 +63,28 @@ func AddList(name string, db *sql.DB) error {
 }
 
 func DelList(id int, db *sql.DB) error {
-	fmt.Println("not implemented")
+	stmt, err := db.Prepare(DeleteListSQL)
+	if err != nil {
+		return fmt.Errorf("prepare failed: %w", err)
+	}
+	defer stmt.Close()
 
+	result, err := stmt.Exec(id)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("could not get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("delete failed: no rows affected")
+	}
+
+	ListLists(db)
+	formatter.PrintColored("\nList successfully deleted.", formatter.Yellow)
 	return nil
 }
 

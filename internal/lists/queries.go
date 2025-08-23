@@ -27,5 +27,7 @@ const (
 		INSERT INTO lists(name) VALUES(?);
 	`
 
-	DeleteListSQL = ``
+	DeleteListSQL = `
+		DELETE FROM lists WHERE id = ?;
+	`
 )
