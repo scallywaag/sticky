@@ -23,6 +23,10 @@ type Flags struct {
 	Green  bool
 	Yellow bool
 	Blue   bool
+
+	// lists
+	ShowAll bool
+	Create  string
 }
 
 func Parse() *Flags {
@@ -40,6 +44,9 @@ func Parse() *Flags {
 	flag.BoolVar(&f.Blue, "b", false, "")
 	flag.BoolVar(&f.Yellow, "y", false, "")
 
+	flag.BoolVar(&f.ShowAll, "ls", false, "")
+	flag.StringVar(&f.Create, "la", "", "")
+
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of sticky:\n")
 		fmt.Fprintf(os.Stderr, "\n* operations\n")
@@ -55,6 +62,10 @@ func Parse() *Flags {
 		fmt.Fprintf(os.Stderr, "  -g bool\n\tcolor note green\n")
 		fmt.Fprintf(os.Stderr, "  -b bool\n\tcolor note blue\n")
 		fmt.Fprintf(os.Stderr, "  -y bool\n\tcolor note yellow\n")
+
+		fmt.Fprintf(os.Stderr, "\n* lists\n")
+		fmt.Fprintf(os.Stderr, "  -ls bool\n\tshow all existing lists\n")
+		fmt.Fprintf(os.Stderr, "  -la <listname> string\n\tcreate new list <listname>\n")
 	}
 
 	flag.Parse()
@@ -76,6 +87,12 @@ func validateFlags(f *Flags) {
 		opCount++
 	}
 	if f.Mut > 0 {
+		opCount++
+	}
+	if f.ShowAll {
+		opCount++
+	}
+	if f.Create != "" {
 		opCount++
 	}
 
@@ -102,7 +119,7 @@ func validateFlags(f *Flags) {
 	}
 
 	if opCount > 1 {
-		fmt.Println("Error: only one of -l, -a, -d, -m can be used at a time.")
+		fmt.Println("Error: only one of -l, -a, -d, -m, -ls, -la can be used at a time.")
 		os.Exit(1)
 	}
 
@@ -116,8 +133,8 @@ func validateFlags(f *Flags) {
 		os.Exit(1)
 	}
 
-	if (f.Red || f.Green || f.Blue || f.Yellow || f.Cross) && (f.Add == "" && f.Mut == 0) {
-		fmt.Println("Error: formatting requires an operation like -a or -m.")
+	if (f.Red || f.Green || f.Blue || f.Yellow || f.Cross || f.Pin) && (f.Add == "" && f.Mut == 0) {
+		fmt.Println("Error: mutating requires an operation like -a or -m.")
 		os.Exit(1)
 	}
 }
