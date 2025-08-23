@@ -9,15 +9,12 @@ import (
 
 func List(db *sql.DB) error {
 	var count int
-	err := db.QueryRow("SELECT COUNT(*) FROM notes").Scan(&count)
+	err := db.QueryRow(CountNotesSQL).Scan(&count)
 	if err != nil {
 		return fmt.Errorf("query row failed: %w", err)
 	}
 
-	stmt, err := db.Prepare(`
-		SELECT id, content, color, cross
-		FROM notes 
-	`)
+	stmt, err := db.Prepare(ListNotesSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -47,10 +44,7 @@ func List(db *sql.DB) error {
 }
 
 func Add(content string, color string, cross bool, db *sql.DB) error {
-	stmt, err := db.Prepare(`
-		INSERT INTO notes(id, content, color, cross)
-		VALUES(NULL, ?, ?, ?)
-	`)
+	stmt, err := db.Prepare(AddNoteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -66,9 +60,7 @@ func Add(content string, color string, cross bool, db *sql.DB) error {
 }
 
 func Del(id int, db *sql.DB) error {
-	stmt, err := db.Prepare(`
-		DELETE FROM notes WHERE id = ?
-	`)
+	stmt, err := db.Prepare(DeleteNoteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -97,18 +89,14 @@ func Mut(id int, color string, cross bool, db *sql.DB) error {
 	var currentColor string
 	var currentCross bool
 	err := db.QueryRow(
-		"SELECT color, cross FROM notes WHERE id = ?",
+		GetMutationsSQL,
 		id,
 	).Scan(&currentColor, &currentCross)
 	if err != nil {
 		return fmt.Errorf("query row failed: %w", err)
 	}
 
-	stmt, err := db.Prepare(`
-		UPDATE notes
-		SET color = ?, cross = ?
-		WHERE id = ?
-	`)
+	stmt, err := db.Prepare(MutateNoteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
