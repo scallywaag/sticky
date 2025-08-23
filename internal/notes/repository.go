@@ -5,11 +5,17 @@ import (
 	"fmt"
 
 	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/highseas-software/sticky/internal/lists"
 )
 
 func List(db *sql.DB) error {
+	activeList, err := lists.GetActiveList(db)
+	if err != nil {
+		return fmt.Errorf("failed to get active list: %w", err)
+	}
+
 	var count int
-	err := db.QueryRow(CountNotesSQL).Scan(&count)
+	err = db.QueryRow(CountNotesSQL, activeList.Id).Scan(&count)
 	if err != nil {
 		return fmt.Errorf("query row failed: %w", err)
 	}
@@ -20,7 +26,7 @@ func List(db *sql.DB) error {
 	}
 	defer stmt.Close()
 
-	rows, err := stmt.Query()
+	rows, err := stmt.Query(activeList.Id)
 	if err != nil {
 		return fmt.Errorf("query failed: %w", err)
 	}
@@ -45,6 +51,11 @@ func List(db *sql.DB) error {
 }
 
 func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) error {
+	activeList, err := lists.GetActiveList(db)
+	if err != nil {
+		return fmt.Errorf("failed to get active list: %w", err)
+	}
+
 	stmt, err := db.Prepare(AddNoteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
@@ -61,7 +72,7 @@ func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) e
 		s = StatusDefault
 	}
 
-	_, err = stmt.Exec(content, c, s)
+	_, err = stmt.Exec(content, c, s, activeList.Id)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
@@ -72,13 +83,18 @@ func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) e
 }
 
 func Del(id int, db *sql.DB) error {
+	activeList, err := lists.GetActiveList(db)
+	if err != nil {
+		return fmt.Errorf("failed to get active list: %w", err)
+	}
+
 	stmt, err := db.Prepare(DeleteNoteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(id)
+	result, err := stmt.Exec(activeList.Id, id)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
@@ -98,10 +114,16 @@ func Del(id int, db *sql.DB) error {
 }
 
 func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
+	activeList, err := lists.GetActiveList(db)
+	if err != nil {
+		return fmt.Errorf("failed to get active list: %w", err)
+	}
+
 	var currentColor formatter.Color
 	var currentStatus NoteStatus
-	err := db.QueryRow(
+	err = db.QueryRow(
 		GetMutationsSQL,
+		activeList.Id,
 		id,
 	).Scan(&currentColor, &currentStatus)
 	if err != nil {
@@ -116,7 +138,7 @@ func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
 
 	c := mutateColor(currentColor, color)
 	x := toggleStatus(currentStatus, status)
-	result, err := stmt.Exec(c, x, id)
+	result, err := stmt.Exec(activeList.Id, c, x, id)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
