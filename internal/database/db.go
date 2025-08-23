@@ -49,7 +49,8 @@ func createNotesTable(db *sql.DB) {
 	stmt := `
 	CREATE TABLE IF NOT EXISTS notes (
 		id integer NOT NULL PRIMARY KEY,
-		content TEXT
+		content TEXT,
+		color TEXT
 	);
 	`
 

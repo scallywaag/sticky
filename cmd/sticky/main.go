@@ -12,13 +12,14 @@ import (
 
 func main() {
 	f := flags.Parse()
+	c := flags.ExtractColor(f)
 
 	db := database.InitDb()
 	defer db.Close()
 
 	switch {
 	case f.Add != "":
-		err := notes.Add(f.Add, db)
+		err := notes.Add(f.Add, c, db)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -4,6 +4,8 @@ import (
 	"flag"
 	"fmt"
 	"os"
+
+	"github.com/highseas-software/sticky/internal/formatter"
 )
 
 type Flags struct {
@@ -57,4 +59,19 @@ func Parse() *Flags {
 	flag.Parse()
 
 	return f
+}
+
+func ExtractColor(f *Flags) string {
+	switch {
+	case f.Red:
+		return formatter.Red
+	case f.Green:
+		return formatter.Green
+	case f.Blue:
+		return formatter.Blue
+	case f.Yellow:
+		return formatter.Yellow
+	default:
+		return formatter.Default
+	}
 }

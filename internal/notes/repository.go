@@ -8,8 +8,14 @@ import (
 )
 
 func List(db *sql.DB) error {
+	var count int
+	err := db.QueryRow("SELECT COUNT(*) FROM notes").Scan(&count)
+	if err != nil {
+		return fmt.Errorf("query row failed: %w", err)
+	}
+
 	stmt, err := db.Prepare(`
-		SELECT id, content
+		SELECT id, content, color
 		FROM notes 
 	`)
 	if err != nil {
@@ -26,12 +32,12 @@ func List(db *sql.DB) error {
 	for rows.Next() {
 		n := Note{}
 
-		err = rows.Scan(&n.Id, &n.Content)
+		err = rows.Scan(&n.Id, &n.Content, &n.Color)
 		if err != nil {
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
-		formatter.Print(n.Content, n.Id, 10, formatter.Blue)
+		formatter.Print(n.Content, n.Id, count, n.Color)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -40,17 +46,17 @@ func List(db *sql.DB) error {
 	return nil
 }
 
-func Add(content string, db *sql.DB) error {
+func Add(content string, color string, db *sql.DB) error {
 	stmt, err := db.Prepare(`
-		INSERT INTO notes(id, content)
-		VALUES(NULL, ?)
+		INSERT INTO notes(id, content, color)
+		VALUES(NULL, ?, ?)
 	`)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(content)
+	_, err = stmt.Exec(content, color)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
