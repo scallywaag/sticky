@@ -61,7 +61,7 @@ func Add(content string, color string, cross bool, db *sql.DB) error {
 		return fmt.Errorf("exec failed: %w", err)
 	}
 
-	fmt.Println("Note successfully added.")
+	formatter.PrintColored("Note successfully added.", formatter.Yellow)
 	return nil
 }
 
@@ -74,11 +74,21 @@ func Del(id int, db *sql.DB) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(id)
+	result, err := stmt.Exec(id)
 	if err != nil {
-		return fmt.Errorf("prepare failed: %w", err)
+		return fmt.Errorf("exec failed: %w", err)
 	}
 
-	fmt.Println("Note successfully deleted.")
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("could not get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("delete failed: no rows affected")
+	}
+
+	List(db)
+	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
 	return nil
 }

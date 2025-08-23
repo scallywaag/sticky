@@ -16,6 +16,10 @@ const (
 	Reset   = "\x1b[0m"
 )
 
+func PrintColored(content string, color string) {
+	fmt.Printf("%s%s%s\n", color, content, Reset)
+}
+
 func Print(content string, currId int, lastId int, color string, cross bool) {
 	curr := strconv.Itoa(currId)
 	last := strconv.Itoa(lastId)
