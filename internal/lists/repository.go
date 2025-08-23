@@ -5,13 +5,19 @@ import (
 	"fmt"
 )
 
-func ShowAll(db *sql.DB) error {
+func ListLists(db *sql.DB) error {
 	fmt.Println("not implemented")
 
 	return nil
 }
 
-func Create(db *sql.DB) error {
+func AddList(db *sql.DB) error {
+	fmt.Println("not implemented")
+
+	return nil
+}
+
+func DelList(db *sql.DB) error {
 	fmt.Println("not implemented")
 
 	return nil

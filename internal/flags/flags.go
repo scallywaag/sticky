@@ -25,8 +25,9 @@ type Flags struct {
 	Blue   bool
 
 	// lists
-	ShowAll bool
-	Create  string
+	ListLists bool
+	AddList   string
+	DelList   int
 }
 
 func Parse() *Flags {
@@ -44,8 +45,9 @@ func Parse() *Flags {
 	flag.BoolVar(&f.Blue, "b", false, "")
 	flag.BoolVar(&f.Yellow, "y", false, "")
 
-	flag.BoolVar(&f.ShowAll, "ls", false, "")
-	flag.StringVar(&f.Create, "la", "", "")
+	flag.BoolVar(&f.ListLists, "ls", false, "")
+	flag.StringVar(&f.AddList, "la", "", "")
+	flag.IntVar(&f.DelList, "ld", 0, "")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of sticky:\n")
@@ -66,6 +68,7 @@ func Parse() *Flags {
 		fmt.Fprintf(os.Stderr, "\n* lists\n")
 		fmt.Fprintf(os.Stderr, "  -ls bool\n\tshow all existing lists\n")
 		fmt.Fprintf(os.Stderr, "  -la <listname> string\n\tadd new list <listname>\n")
+		fmt.Fprintf(os.Stderr, "  -ld <id> int\n\tdelete list by <id>\n")
 	}
 
 	flag.Parse()
@@ -89,10 +92,13 @@ func validateFlags(f *Flags) {
 	if f.Mut > 0 {
 		opCount++
 	}
-	if f.ShowAll {
+	if f.ListLists {
 		opCount++
 	}
-	if f.Create != "" {
+	if f.AddList != "" {
+		opCount++
+	}
+	if f.DelList != 0 {
 		opCount++
 	}
 
@@ -119,7 +125,7 @@ func validateFlags(f *Flags) {
 	}
 
 	if opCount > 1 {
-		fmt.Println("Error: only one of -l, -a, -d, -m, -ls, -la can be used at a time.")
+		fmt.Println("Error: only one of -l, -a, -d, -m, -ls, -la, -ld can be used at a time.")
 		os.Exit(1)
 	}
 

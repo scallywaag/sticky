@@ -40,13 +40,18 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.ShowAll:
-		err := lists.ShowAll(db)
+	case f.ListLists:
+		err := lists.ListLists(db)
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.Create != "":
-		err := lists.Create(db)
+	case f.AddList != "":
+		err := lists.AddList(db)
+		if err != nil {
+			log.Fatal(err)
+		}
+	case f.DelList != 0:
+		err := lists.DelList(db)
 		if err != nil {
 			log.Fatal(err)
 		}
