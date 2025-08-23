@@ -78,8 +78,27 @@ func validateFlags(f *Flags) {
 		opCount++
 	}
 
+	mutCount := 0
+	if f.Red {
+		mutCount++
+	}
+	if f.Green {
+		mutCount++
+	}
+	if f.Blue {
+		mutCount++
+	}
+	if f.Yellow {
+		mutCount++
+	}
+
 	if opCount > 1 {
 		fmt.Println("Error: only one of -l, -a, -d, -m can be used at a time.")
+		os.Exit(1)
+	}
+
+	if mutCount > 1 {
+		fmt.Println("Error: only one of -r, -g, -b, -y can be used at a time.")
 		os.Exit(1)
 	}
 
