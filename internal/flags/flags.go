@@ -28,17 +28,17 @@ type Flags struct {
 func Parse() *Flags {
 	f := &Flags{}
 
-	flag.StringVar(&f.List, "l", "", "list all notes")
-	flag.StringVar(&f.Add, "a", "", "add a note")
-	flag.IntVar(&f.Del, "d", 0, "delete a note by id")
-	flag.IntVar(&f.Mut, "m", 0, "mutate note - pin, cross or format color")
+	flag.StringVar(&f.List, "l", "", "")
+	flag.StringVar(&f.Add, "a", "", "")
+	flag.IntVar(&f.Del, "d", 0, "")
+	flag.IntVar(&f.Mut, "m", 0, "")
 
-	flag.BoolVar(&f.Pin, "p", false, "pin note - send to top of list (toggle)")
-	flag.BoolVar(&f.Cross, "c", false, "cross note - send to bottom of list (toggle)")
-	flag.BoolVar(&f.Red, "r", false, "color the note red")
-	flag.BoolVar(&f.Green, "g", false, "color the note green")
-	flag.BoolVar(&f.Blue, "b", false, "color the note blue")
-	flag.BoolVar(&f.Yellow, "y", false, "color the note yellow")
+	flag.BoolVar(&f.Pin, "p", false, "")
+	flag.BoolVar(&f.Cross, "c", false, "")
+	flag.BoolVar(&f.Red, "r", false, "")
+	flag.BoolVar(&f.Green, "g", false, "")
+	flag.BoolVar(&f.Blue, "b", false, "")
+	flag.BoolVar(&f.Yellow, "y", false, "")
 
 	flag.Usage = func() {
 		fmt.Fprintf(os.Stderr, "Usage of sticky:\n")
