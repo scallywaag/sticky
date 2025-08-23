@@ -1,10 +1,11 @@
 package notes
 
 type Note struct {
-	Id      int
-	Content string
-	Color   string
-	Status  NoteStatus
+	Id        int
+	Content   string
+	Color     string
+	Status    NoteStatus
+	VirtualId int
 }
 
 type NoteStatus string

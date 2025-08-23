@@ -79,17 +79,25 @@ func validateFlags(f *Flags) {
 		opCount++
 	}
 
-	mutCount := 0
+	formatCount := 0
 	if f.Red {
-		mutCount++
+		formatCount++
 	}
 	if f.Green {
-		mutCount++
+		formatCount++
 	}
 	if f.Blue {
-		mutCount++
+		formatCount++
 	}
 	if f.Yellow {
+		formatCount++
+	}
+
+	mutCount := 0
+	if f.Cross {
+		mutCount++
+	}
+	if f.Pin {
 		mutCount++
 	}
 
@@ -98,8 +106,13 @@ func validateFlags(f *Flags) {
 		os.Exit(1)
 	}
 
-	if mutCount > 1 {
+	if formatCount > 1 {
 		fmt.Println("Error: only one of -r, -g, -b, -y can be used at a time.")
+		os.Exit(1)
+	}
+
+	if mutCount > 1 {
+		fmt.Println("Error: only one of -p, -c can be used at a time.")
 		os.Exit(1)
 	}
 
@@ -131,6 +144,6 @@ func GetNoteStatus(f *Flags) notes.NoteStatus {
 	case f.Cross:
 		return notes.StatusCross
 	default:
-		return notes.StatusDefault
+		return ""
 	}
 }

@@ -29,13 +29,13 @@ func List(db *sql.DB) error {
 	for rows.Next() {
 		n := Note{}
 
-		err = rows.Scan(&n.Id, &n.Content, &n.Color, &n.Status)
+		err = rows.Scan(&n.VirtualId, &n.Content, &n.Color, &n.Status)
 		if err != nil {
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
 		cross := n.Status == StatusCross
-		formatter.Print(n.Content, n.Id, count, n.Color, cross)
+		formatter.Print(n.Content, n.VirtualId, count, n.Color, cross)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -55,7 +55,13 @@ func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) e
 	if c == "" {
 		c = formatter.Default
 	}
-	_, err = stmt.Exec(content, c, status)
+
+	s := status
+	if s == "" {
+		s = StatusDefault
+	}
+
+	_, err = stmt.Exec(content, c, s)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
@@ -140,6 +146,9 @@ func mutateColor(current formatter.Color, newColor formatter.Color) formatter.Co
 }
 
 func toggleStatus(current NoteStatus, newStatus NoteStatus) NoteStatus {
+	if newStatus == "" {
+		return current
+	}
 	if current == newStatus {
 		return StatusDefault
 	}
