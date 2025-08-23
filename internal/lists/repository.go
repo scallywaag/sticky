@@ -3,11 +3,44 @@ package lists
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/highseas-software/sticky/internal/formatter"
 )
 
 func ListLists(db *sql.DB) error {
-	fmt.Println("not implemented")
+	var count int
+	err := db.QueryRow(CountListsSQL).Scan(&count)
+	if err != nil {
+		return fmt.Errorf("query row failed: %w", err)
+	}
 
+	stmt, err := db.Prepare(ListListsSQL)
+	if err != nil {
+		return fmt.Errorf("prepare failed: %w", err)
+	}
+	defer stmt.Close()
+
+	rows, err := stmt.Query()
+	if err != nil {
+		return fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
+
+	formatter.PrintListHeader("lists", count)
+	for rows.Next() {
+		l := List{}
+
+		err = rows.Scan(&l.Id, &l.Name)
+		if err != nil {
+			return fmt.Errorf("scan failed: %w", err)
+		}
+
+		formatter.Print(l.Name, l.Id, count, string(formatter.Default), false)
+	}
+
+	if err = rows.Err(); err != nil {
+		return fmt.Errorf("rows error: %w", err)
+	}
 	return nil
 }
 
@@ -25,7 +58,6 @@ func DelList(db *sql.DB) error {
 
 func GetActiveList(db *sql.DB) (*List, error) {
 	l := &List{}
-
 	err := db.QueryRow(GetActiveListSQL).Scan(&l.Id, &l.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {

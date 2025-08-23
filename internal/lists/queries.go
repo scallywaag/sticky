@@ -1,6 +1,8 @@
 package lists
 
 const (
+	CountListsSQL = `SELECT COUNT(*) FROM lists;`
+
 	GetActiveListSQL = `
 		SELECT l.id, l.name
 	    FROM state s
@@ -19,6 +21,7 @@ const (
 	`
 
 	ListListsSQL = `
+		SELECT id, name FROM lists;
 	`
 	AddListSQL = `
 	`
