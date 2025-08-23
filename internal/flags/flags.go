@@ -50,6 +50,7 @@ func Parse() *Flags {
 	flag.IntVar(&f.DelList, "ld", 0, "")
 
 	flag.Usage = func() {
+		formatter.ClearScreen()
 		fmt.Fprintf(os.Stderr, "Usage of sticky:\n")
 		fmt.Fprintf(os.Stderr, "\n* operations\n")
 		fmt.Fprintf(os.Stderr, "  -l <listname> string\n\tlist all notes from <listname>\n")
