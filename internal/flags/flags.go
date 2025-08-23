@@ -70,6 +70,9 @@ func Parse() *Flags {
 		fmt.Fprintf(os.Stderr, "  -ls bool\n\tshow all existing lists\n")
 		fmt.Fprintf(os.Stderr, "  -la <listname> string\n\tadd new list <listname>\n")
 		fmt.Fprintf(os.Stderr, "  -ld <id> int\n\tdelete list by <id>\n")
+
+		fmt.Fprintf(os.Stderr, "\n*\n")
+		fmt.Fprintf(os.Stderr, "  -h\n\topen this help menu\n")
 	}
 
 	flag.Parse()
