@@ -21,6 +21,10 @@ const (
 
 const sep = " - "
 
+func ClearScreen() {
+	fmt.Print("\033[H\033[2J")
+}
+
 func PrintColored(content string, color Color) {
 	fmt.Printf("%s%s%s\n", color, content, Reset)
 }

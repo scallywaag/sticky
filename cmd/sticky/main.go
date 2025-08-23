@@ -46,12 +46,12 @@ func main() {
 			log.Fatal(err)
 		}
 	case f.AddList != "":
-		err := lists.AddList(db)
+		err := lists.AddList(f.AddList, db)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case f.DelList != 0:
-		err := lists.DelList(db)
+		err := lists.DelList(f.DelList, db)
 		if err != nil {
 			log.Fatal(err)
 		}

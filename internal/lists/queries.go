@@ -24,6 +24,7 @@ const (
 		SELECT id, name FROM lists;
 	`
 	AddListSQL = `
+		INSERT INTO lists(name) VALUES(?);
 	`
 
 	DeleteListSQL = ``

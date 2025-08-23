@@ -26,6 +26,7 @@ func ListLists(db *sql.DB) error {
 	}
 	defer rows.Close()
 
+	formatter.ClearScreen()
 	formatter.PrintListHeader("lists", count)
 	for rows.Next() {
 		l := List{}
@@ -44,13 +45,24 @@ func ListLists(db *sql.DB) error {
 	return nil
 }
 
-func AddList(db *sql.DB) error {
-	fmt.Println("not implemented")
+func AddList(name string, db *sql.DB) error {
+	stmt, err := db.Prepare(AddListSQL)
+	if err != nil {
+		return fmt.Errorf("prepare failed: %w", err)
+	}
+	defer stmt.Close()
 
+	_, err = stmt.Exec(name)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
+
+	ListLists(db)
+	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
 	return nil
 }
 
-func DelList(db *sql.DB) error {
+func DelList(id int, db *sql.DB) error {
 	fmt.Println("not implemented")
 
 	return nil

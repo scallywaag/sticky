@@ -43,6 +43,7 @@ func List(name string, db *sql.DB) error {
 	}
 	defer rows.Close()
 
+	formatter.ClearScreen()
 	formatter.PrintListHeader(activeList.Name, count)
 	for rows.Next() {
 		n := Note{}
