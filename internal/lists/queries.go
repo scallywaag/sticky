@@ -21,13 +21,28 @@ const (
 	`
 
 	ListListsSQL = `
-		SELECT id, name FROM lists;
+		WITH ordered_lists AS (
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY id) AS virtual_id,
+				name
+			FROM lists
+		)
+		SELECT virtual_id, name
+		FROM ordered_lists
 	`
+
 	AddListSQL = `
 		INSERT INTO lists(name) VALUES(?);
 	`
 
 	DeleteListSQL = `
-		DELETE FROM lists WHERE id = ?;
+		WITH ordered_lists AS (
+			SELECT
+				ROW_NUMBER() OVER (ORDER BY id) AS virtual_id,
+				id
+			FROM lists
+		)
+		DELETE FROM lists
+		WHERE id = (SELECT id FROM ordered_lists WHERE virtual_id = ?)
 	`
 )

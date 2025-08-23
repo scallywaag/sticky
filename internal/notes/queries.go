@@ -47,7 +47,7 @@ const (
 		)
 		DELETE FROM notes
 		WHERE id = (SELECT id FROM ordered_notes WHERE virtual_id = ?)
-`
+	`
 
 	GetMutationsSQL = `
 		WITH ordered_notes AS (

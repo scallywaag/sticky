@@ -17,6 +17,8 @@ func InitDb() *sql.DB {
 		log.Fatal(err)
 	}
 
+	db.Exec("PRAGMA foreign_keys = ON")
+
 	createTables(db)
 	ensureDefaultList(db)
 
