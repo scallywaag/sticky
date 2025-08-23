@@ -4,5 +4,13 @@ type Note struct {
 	Id      int
 	Content string
 	Color   string
-	Cross   bool
+	Status  NoteStatus
 }
+
+type NoteStatus string
+
+const (
+	StatusPin     NoteStatus = "pin"
+	StatusCross   NoteStatus = "cross"
+	StatusDefault NoteStatus = "default"
+)

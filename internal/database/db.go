@@ -51,7 +51,7 @@ func createNotesTable(db *sql.DB) {
 		id integer NOT NULL PRIMARY KEY,
 		content TEXT,
 		color TEXT,
-		cross BOOL
+		status TEXT
 	);
 	`
 

@@ -13,13 +13,14 @@ import (
 func main() {
 	f := flags.Parse()
 	c := flags.ExtractColor(f)
+	s := flags.GetNoteStatus(f)
 
 	db := database.InitDb()
 	defer db.Close()
 
 	switch {
 	case f.Add != "":
-		err := notes.Add(f.Add, c, f.Cross, db)
+		err := notes.Add(f.Add, c, s, db)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -34,7 +35,7 @@ func main() {
 			log.Fatal(err)
 		}
 	case f.Mut != 0:
-		err := notes.Mut(f.Mut, c, f.Cross, db)
+		err := notes.Mut(f.Mut, c, s, db)
 		if err != nil {
 			log.Fatal(err)
 		}

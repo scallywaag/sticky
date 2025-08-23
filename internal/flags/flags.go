@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/highseas-software/sticky/internal/notes"
 )
 
 type Flags struct {
@@ -108,7 +109,7 @@ func validateFlags(f *Flags) {
 	}
 }
 
-func ExtractColor(f *Flags) string {
+func ExtractColor(f *Flags) formatter.Color {
 	switch {
 	case f.Red:
 		return formatter.Red
@@ -119,6 +120,17 @@ func ExtractColor(f *Flags) string {
 	case f.Yellow:
 		return formatter.Yellow
 	default:
-		return formatter.Default
+		return ""
+	}
+}
+
+func GetNoteStatus(f *Flags) notes.NoteStatus {
+	switch {
+	case f.Pin:
+		return notes.StatusPin
+	case f.Cross:
+		return notes.StatusCross
+	default:
+		return notes.StatusDefault
 	}
 }

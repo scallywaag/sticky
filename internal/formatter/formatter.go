@@ -6,17 +6,20 @@ import (
 	"strings"
 )
 
+type Color string
+
 const (
-	Strike  = "\x1b[9m"
-	Red     = "\x1b[31m"
-	Green   = "\x1b[32m"
-	Yellow  = "\x1b[33m"
-	Blue    = "\x1b[34m"
-	Default = "\x1b[39m"
-	Reset   = "\x1b[0m"
+	Red     Color = "\x1b[31m"
+	Green   Color = "\x1b[32m"
+	Yellow  Color = "\x1b[33m"
+	Blue    Color = "\x1b[34m"
+	Default Color = "\x1b[39m"
+
+	Strike = "\x1b[9m"
+	Reset  = "\x1b[0m"
 )
 
-func PrintColored(content string, color string) {
+func PrintColored(content string, color Color) {
 	fmt.Printf("%s%s%s\n", color, content, Reset)
 }
 

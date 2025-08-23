@@ -29,12 +29,13 @@ func List(db *sql.DB) error {
 	for rows.Next() {
 		n := Note{}
 
-		err = rows.Scan(&n.Id, &n.Content, &n.Color, &n.Cross)
+		err = rows.Scan(&n.Id, &n.Content, &n.Color, &n.Status)
 		if err != nil {
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
-		formatter.Print(n.Content, n.Id, count, n.Color, n.Cross)
+		cross := n.Status == StatusCross
+		formatter.Print(n.Content, n.Id, count, n.Color, cross)
 	}
 
 	if err = rows.Err(); err != nil {
@@ -43,19 +44,24 @@ func List(db *sql.DB) error {
 	return nil
 }
 
-func Add(content string, color string, cross bool, db *sql.DB) error {
+func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) error {
 	stmt, err := db.Prepare(AddNoteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(content, color, cross)
+	c := color
+	if c == "" {
+		c = formatter.Default
+	}
+	_, err = stmt.Exec(content, c, status)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
 
-	formatter.PrintColored("Note successfully added.", formatter.Yellow)
+	List(db)
+	formatter.PrintColored("\nNote successfully added.", formatter.Yellow)
 	return nil
 }
 
@@ -85,13 +91,13 @@ func Del(id int, db *sql.DB) error {
 	return nil
 }
 
-func Mut(id int, color string, cross bool, db *sql.DB) error {
-	var currentColor string
-	var currentCross bool
+func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
+	var currentColor formatter.Color
+	var currentStatus NoteStatus
 	err := db.QueryRow(
 		GetMutationsSQL,
 		id,
-	).Scan(&currentColor, &currentCross)
+	).Scan(&currentColor, &currentStatus)
 	if err != nil {
 		return fmt.Errorf("query row failed: %w", err)
 	}
@@ -103,7 +109,7 @@ func Mut(id int, color string, cross bool, db *sql.DB) error {
 	defer stmt.Close()
 
 	c := mutateColor(currentColor, color)
-	x := toggleCross(currentCross, cross)
+	x := toggleStatus(currentStatus, status)
 	result, err := stmt.Exec(c, x, id)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
@@ -123,16 +129,19 @@ func Mut(id int, color string, cross bool, db *sql.DB) error {
 	return nil
 }
 
-func mutateColor(current string, newColor string) string {
+func mutateColor(current formatter.Color, newColor formatter.Color) formatter.Color {
+	if newColor == "" {
+		return current
+	}
 	if current == newColor {
 		return formatter.Default
 	}
 	return newColor
 }
 
-func toggleCross(current bool, toggle bool) bool {
-	if toggle {
-		return !current
+func toggleStatus(current NoteStatus, newStatus NoteStatus) NoteStatus {
+	if current == newStatus {
+		return StatusDefault
 	}
-	return current
+	return newStatus
 }
