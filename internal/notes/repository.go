@@ -8,10 +8,21 @@ import (
 	"github.com/highseas-software/sticky/internal/lists"
 )
 
-func List(db *sql.DB) error {
-	activeList, err := lists.GetActiveList(db)
-	if err != nil {
-		return fmt.Errorf("failed to get active list: %w", err)
+func List(name string, db *sql.DB) error {
+	var activeList *lists.List
+	var err error
+
+	if name != "" {
+		activeList, err = lists.SetActiveList(name, db)
+		if err != nil {
+			return fmt.Errorf("failed to set active list: %w", err)
+		}
+
+	} else {
+		activeList, err = lists.GetActiveList(db)
+		if err != nil {
+			return fmt.Errorf("failed to get active list: %w", err)
+		}
 	}
 
 	var count int
@@ -78,7 +89,7 @@ func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) e
 		return fmt.Errorf("exec failed: %w", err)
 	}
 
-	List(db)
+	List(activeList.Name, db)
 	formatter.PrintColored("\nNote successfully added.", formatter.Yellow)
 	return nil
 }
@@ -109,7 +120,7 @@ func Del(id int, db *sql.DB) error {
 		return fmt.Errorf("delete failed: no rows affected")
 	}
 
-	List(db)
+	List(activeList.Name, db)
 	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
 	return nil
 }
@@ -153,7 +164,7 @@ func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
 		return fmt.Errorf("delete failed: no rows affected")
 	}
 
-	List(db)
+	List(activeList.Name, db)
 	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
 	return nil
 }

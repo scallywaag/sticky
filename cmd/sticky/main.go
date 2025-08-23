@@ -26,7 +26,7 @@ func main() {
 			log.Fatal(err)
 		}
 	case f.List != "":
-		err := notes.List(db)
+		err := notes.List(f.List, db)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -56,7 +56,7 @@ func main() {
 			log.Fatal(err)
 		}
 	default:
-		err := notes.List(db)
+		err := notes.List(f.List, db)
 		if err != nil {
 			log.Fatal(err)
 		}
