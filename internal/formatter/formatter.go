@@ -20,53 +20,49 @@ func Print(content string, currId int, lastId int, color string) {
 	last := strconv.Itoa(lastId)
 
 	padDiff := getPadDiff(curr, last)
+	maxPad := getPadDiff("", last)
 	maxContent := 80 - len(last)
 
-	// Split content into lines with word wrapping
 	lines := []string{}
-	line := ""
-	word := ""
 
-	for _, c := range content {
-		if c != ' ' {
-			word += string(c)
-		} else {
+	// Split content by existing newlines first
+	paragraphs := strings.SplitSeq(content, "\n")
+
+	for para := range paragraphs {
+		if strings.TrimSpace(para) == "" {
+			// preserve blank lines
+			lines = append(lines, "")
+			continue
+		}
+
+		words := strings.Fields(para)
+		line := ""
+
+		for _, word := range words {
 			if len(line)+len(word)+1 > maxContent {
-				lines = append(lines, line)
+				lines = append(lines, strings.TrimSpace(line))
 				line = word + " "
 			} else {
 				line += word + " "
 			}
-			word = ""
+		}
+
+		if strings.TrimSpace(line) != "" {
+			lines = append(lines, strings.TrimSpace(line))
 		}
 	}
 
-	// Handle last word
-	if word != "" {
-		if len(line)+len(word) > maxContent {
-			lines = append(lines, line)
-			line = word
-		} else {
-			line += word
-		}
-	}
-
-	// Push the final line if it has content
-	if line != "" {
-		lines = append(lines, line)
-	}
-
-	// Print first line with proper padding
+	// Print first line with ID + padding
 	if len(lines) > 0 {
 		formatted := fmt.Sprintf("%s%s - %s%s\n", color, curr, lines[0], Reset)
 		padded := leftPad(formatted, padDiff)
 		fmt.Print(padded)
 	}
 
-	// Print remaining lines, aligned
+	// Print remaining lines, aligned under first
 	for i := 1; i < len(lines); i++ {
 		formatted := fmt.Sprintf("%s   %s%s\n", color, lines[i], Reset)
-		padded := leftPad(formatted, getPadDiff("", last))
+		padded := leftPad(formatted, maxPad)
 		fmt.Print(padded)
 	}
 }
