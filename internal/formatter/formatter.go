@@ -29,8 +29,7 @@ func Print(content string, currId int, lastId int, color string) {
 	paragraphs := strings.SplitSeq(content, "\n")
 
 	for para := range paragraphs {
-		if strings.TrimSpace(para) == "" {
-			// preserve blank lines
+		if para == "" {
 			lines = append(lines, "")
 			continue
 		}
@@ -39,16 +38,18 @@ func Print(content string, currId int, lastId int, color string) {
 		line := ""
 
 		for _, word := range words {
-			if len(line)+len(word)+1 > maxContent {
-				lines = append(lines, strings.TrimSpace(line))
-				line = word + " "
+			if line == "" {
+				line = word
+			} else if len(line)+1+len(word) > maxContent {
+				lines = append(lines, line)
+				line = word
 			} else {
-				line += word + " "
+				line += " " + word
 			}
 		}
 
-		if strings.TrimSpace(line) != "" {
-			lines = append(lines, strings.TrimSpace(line))
+		if line != "" {
+			lines = append(lines, line)
 		}
 	}
 
