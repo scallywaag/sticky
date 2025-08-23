@@ -58,7 +58,35 @@ func Parse() *Flags {
 
 	flag.Parse()
 
+	validateFlags(f)
+
 	return f
+}
+
+func validateFlags(f *Flags) {
+	opCount := 0
+	if f.Add != "" {
+		opCount++
+	}
+	if f.List != "" {
+		opCount++
+	}
+	if f.Del > 0 {
+		opCount++
+	}
+	if f.Mut > 0 {
+		opCount++
+	}
+
+	if opCount > 1 {
+		fmt.Println("Error: only one of -l, -a, -d, -m can be used at a time.")
+		os.Exit(1)
+	}
+
+	if (f.Red || f.Green || f.Blue || f.Yellow || f.Cross) && (f.Add == "" && f.Mut == 0) {
+		fmt.Println("Error: formatting requires an operation like -a or -m.")
+		os.Exit(1)
+	}
 }
 
 func ExtractColor(f *Flags) string {
