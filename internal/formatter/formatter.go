@@ -19,8 +19,21 @@ const (
 	Reset  = "\x1b[0m"
 )
 
+const sep = " - "
+
 func PrintColored(content string, color Color) {
 	fmt.Printf("%s%s%s\n", color, content, Reset)
+}
+
+func PrintListHeader(name string, lastId int) {
+	n := 6
+	divider := strings.Repeat("-", n*2+len(name))
+
+	pad := strings.Repeat(" ", len(sep))
+	padDiff := getPadDiff("", strconv.Itoa(lastId))
+	content := fmt.Sprintf("%s%s%s\n%s\n", Blue, name, Reset, divider)
+	padded := leftPad(pad+content, padDiff)
+	fmt.Print(padded)
 }
 
 func Print(content string, currId int, lastId int, color string, cross bool) {
@@ -30,7 +43,6 @@ func Print(content string, currId int, lastId int, color string, cross bool) {
 	padDiff := getPadDiff(curr, last)
 	maxPad := getPadDiff("", last)
 	maxContent := 80 - len(last)
-	sep := " - "
 	sepNewline := strings.Repeat(" ", len(sep))
 
 	lines := []string{}

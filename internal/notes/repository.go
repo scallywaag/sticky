@@ -32,6 +32,7 @@ func List(db *sql.DB) error {
 	}
 	defer rows.Close()
 
+	formatter.PrintListHeader(activeList.Name, count)
 	for rows.Next() {
 		n := Note{}
 
