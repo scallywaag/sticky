@@ -33,6 +33,11 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
+	case f.Mut != 0:
+		err := notes.Mut(f.Mut, c, f.Cross, db)
+		if err != nil {
+			log.Fatal(err)
+		}
 	default:
 		err := notes.List(db)
 		if err != nil {

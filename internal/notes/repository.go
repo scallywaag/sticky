@@ -92,3 +92,59 @@ func Del(id int, db *sql.DB) error {
 	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
 	return nil
 }
+
+func Mut(id int, color string, cross bool, db *sql.DB) error {
+	var currentColor string
+	var currentCross bool
+	err := db.QueryRow(
+		"SELECT color, cross FROM notes WHERE id = ?",
+		id,
+	).Scan(&currentColor, &currentCross)
+	if err != nil {
+		return fmt.Errorf("query row failed: %w", err)
+	}
+
+	stmt, err := db.Prepare(`
+		UPDATE notes
+		SET color = ?, cross = ?
+		WHERE id = ?
+	`)
+	if err != nil {
+		return fmt.Errorf("prepare failed: %w", err)
+	}
+	defer stmt.Close()
+
+	c := mutateColor(currentColor, color)
+	x := toggleCross(currentCross, cross)
+	result, err := stmt.Exec(c, x, id)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("could not get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("delete failed: no rows affected")
+	}
+
+	List(db)
+	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
+	return nil
+}
+
+func mutateColor(current string, newColor string) string {
+	if current == newColor {
+		return formatter.Default
+	}
+	return newColor
+}
+
+func toggleCross(current bool, toggle bool) bool {
+	if toggle {
+		return !current
+	}
+	return current
+}
