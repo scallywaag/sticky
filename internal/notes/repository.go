@@ -3,6 +3,8 @@ package notes
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/highseas-software/sticky/internal/formatter"
 )
 
 func List(db *sql.DB) error {
@@ -29,7 +31,7 @@ func List(db *sql.DB) error {
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
-		fmt.Printf("%d -- %s\n", n.Id, n.Content)
+		formatter.Print(n.Content, n.Id, 10, formatter.Blue)
 	}
 
 	if err = rows.Err(); err != nil {
