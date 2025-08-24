@@ -169,23 +169,3 @@ func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
 	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
 	return nil
 }
-
-func mutateColor(current formatter.Color, newColor formatter.Color) formatter.Color {
-	if newColor == "" {
-		return current
-	}
-	if current == newColor {
-		return formatter.Default
-	}
-	return newColor
-}
-
-func toggleStatus(current NoteStatus, newStatus NoteStatus) NoteStatus {
-	if newStatus == "" {
-		return current
-	}
-	if current == newStatus {
-		return StatusDefault
-	}
-	return newStatus
-}
