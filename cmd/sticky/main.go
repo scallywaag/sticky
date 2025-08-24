@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/highseas-software/sticky/internal/config"
 	"github.com/highseas-software/sticky/internal/database"
 	"github.com/highseas-software/sticky/internal/flags"
 	"github.com/highseas-software/sticky/internal/lists"
@@ -12,6 +13,7 @@ import (
 )
 
 func main() {
+	config.LoadEnv()
 	f := flags.Parse()
 	c := flags.ExtractColor(f)
 	s := flags.GetNoteStatus(f)
