@@ -25,8 +25,8 @@ const (
 const sep = " - "
 
 func ClearScreen() {
-	val, ok := os.LookupEnv(env.ClrEnvVar)
-	if !ok || val == "" || val == string(env.ClrEnabled) {
+	val := os.Getenv(env.StickyEnvVar)
+	if val != "dev" && val != "test" {
 		fmt.Print("\033[H\033[2J")
 	}
 }
