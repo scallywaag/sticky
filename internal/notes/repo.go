@@ -3,10 +3,12 @@ package notes
 import "database/sql"
 
 type Repository interface {
-	GetAll() ([]Note, error)
+	GetAll(name string) ([]Note, error)
 	Add(note *Note) error
 	Delete(id int) error
 	Update(id int) error
+	GetMutations(id int) error
+	Count(id int) (int, error)
 }
 
 type DBRepository struct {
@@ -17,7 +19,7 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 	return &DBRepository{db: db}
 }
 
-func (r *DBRepository) GetAll() ([]Note, error) {
+func (r *DBRepository) GetAll(name string) ([]Note, error) {
 	return nil, nil
 }
 
@@ -30,5 +32,13 @@ func (r *DBRepository) Delete(id int) error {
 }
 
 func (r *DBRepository) Update(id int) error {
+	return nil
+}
+
+func (r *DBRepository) GetMutations(id int) error {
+	return nil
+}
+
+func (r *DBRepository) Count(id int) error {
 	return nil
 }
