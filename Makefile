@@ -20,5 +20,5 @@ clean:
 	rm -rf bin
 
 purge:
-	rm ~/.local/share/sticky/sticky.db
+	rm sticky.db
 
