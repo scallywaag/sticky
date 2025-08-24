@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	config.LoadEnv()
+	config.PrintAppEnv()
 	f := flags.Parse()
 	c := flags.ExtractColor(f)
 	s := flags.GetNoteStatus(f)
