@@ -2,8 +2,11 @@ package formatter
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
+
+	"github.com/highseas-software/sticky/internal/env"
 )
 
 type Color string
@@ -22,7 +25,10 @@ const (
 const sep = " - "
 
 func ClearScreen() {
-	fmt.Print("\033[H\033[2J")
+	val, ok := os.LookupEnv(env.ClrEnvVar)
+	if !ok || val == "" || val == string(env.ClrEnabled) {
+		fmt.Print("\033[H\033[2J")
+	}
 }
 
 func PrintColored(content string, color Color) {
