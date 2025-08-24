@@ -13,7 +13,7 @@ const (
 							WHEN status = 'cross' THEN 3
 							ELSE 2
 						END,
-						id
+						id DESC
 				) AS virtual_id,
 				content,
 				color,
@@ -24,6 +24,7 @@ const (
 		SELECT virtual_id, content, color, status
 		FROM ordered_notes;
 	`
+
 	AddNoteSQL = `
 		INSERT INTO notes(content, color, status, list_id)
 		VALUES(?, ?, ?, ?);
@@ -39,7 +40,7 @@ const (
 							WHEN status = 'cross' THEN 3
 							ELSE 2
 						END,
-						id
+						id DESC
 				) AS virtual_id,
 				id
 			FROM notes
@@ -59,7 +60,7 @@ const (
 							WHEN status = 'cross' THEN 3
 							ELSE 2
 						END,
-						id
+						id DESC
 				) AS virtual_id,
 				color,
 				status
@@ -81,7 +82,7 @@ const (
 							WHEN status = 'cross' THEN 3
 							ELSE 2
 						END,
-						id
+						id DESC
 				) AS virtual_id,
 				id,
 				color,

@@ -23,7 +23,7 @@ const (
 	ListListsSQL = `
 		WITH ordered_lists AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER BY id) AS virtual_id,
+				ROW_NUMBER() OVER (ORDER BY id DESC) AS virtual_id,
 				name
 			FROM lists
 		)
@@ -38,7 +38,7 @@ const (
 	DeleteListSQL = `
 		WITH ordered_lists AS (
 			SELECT
-				ROW_NUMBER() OVER (ORDER BY id) AS virtual_id,
+				ROW_NUMBER() OVER (ORDER BY id DESC) AS virtual_id,
 				id
 			FROM lists
 		)
