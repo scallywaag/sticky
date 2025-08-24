@@ -8,6 +8,8 @@ type Repository interface {
 	Delete(id int) error
 	GetActive() (*List, error)
 	SetActive(name string) (*List, error)
+	Count() (int, error)
+	GetId(name string) (int, error)
 }
 
 type DBRepository struct {
@@ -19,6 +21,7 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 }
 
 func (r *DBRepository) GetAll() ([]List, error) {
+
 	return nil, nil
 }
 
@@ -36,4 +39,12 @@ func (r *DBRepository) GetActive() (*List, error) {
 
 func (r *DBRepository) SetActive(name string) (*List, error) {
 	return nil, nil
+}
+
+func (r *DBRepository) Count(name string) (int, error) {
+	return 0, nil
+}
+
+func (r *DBRepository) GetId(name string) (int, error) {
+	return 0, nil
 }

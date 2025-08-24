@@ -17,7 +17,7 @@ const (
 	`
 
 	GetListIdByNameSQL = `
-		SELECT id FROM lists WHERE name = ?
+		SELECT id FROM lists WHERE name = ?;
 	`
 
 	ListListsSQL = `
@@ -28,7 +28,7 @@ const (
 			FROM lists
 		)
 		SELECT virtual_id, name
-		FROM ordered_lists
+		FROM ordered_lists;
 	`
 
 	AddListSQL = `
@@ -43,6 +43,6 @@ const (
 			FROM lists
 		)
 		DELETE FROM lists
-		WHERE id = (SELECT id FROM ordered_lists WHERE virtual_id = ?)
+		WHERE id = (SELECT id FROM ordered_lists WHERE virtual_id = ?);
 	`
 )
