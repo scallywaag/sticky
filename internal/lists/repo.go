@@ -46,15 +46,21 @@ func (r *DBRepository) GetAll() ([]List, error) {
 	return lists, nil
 }
 
-func (r *DBRepository) Add(name string) error {
-	_, err := r.db.Exec(AddSQL, name)
+func (r *DBRepository) Add(name string) (int64, error) {
+	result, err := r.db.Exec(AddSQL, name)
 	if err != nil {
-		return fmt.Errorf("exec failed: %w", err)
+		return 0, fmt.Errorf("exec failed: %w", err)
 	}
-	return nil
+
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("failed to get last insert id: %w", err)
+	}
+
+	return id, nil
 }
 
-func (r *DBRepository) Delete(id int) error {
+func (r *DBRepository) Delete(id int64) error {
 	result, err := r.db.Exec(DeleteSQL, id)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
@@ -73,11 +79,38 @@ func (r *DBRepository) Delete(id int) error {
 }
 
 func (r *DBRepository) GetActive() (*List, error) {
-	return nil, nil
+	l := &List{}
+	err := r.db.QueryRow(GetActiveSQL).Scan(&l.Id, &l.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no active list found: %w", err)
+		}
+		return nil, fmt.Errorf("query row failed: %w", err)
+	}
+
+	return l, nil
 }
 
-func (r *DBRepository) SetActive(name string) (*List, error) {
-	return nil, nil
+func (r *DBRepository) SetActive(id int64, name string) (*List, error) {
+	result, err := r.db.Exec(SetActiveSQL, id)
+	if err != nil {
+		return nil, fmt.Errorf("failed to set active list: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get affected rows: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return nil, fmt.Errorf("no list found with id %d", id)
+	}
+
+	l := &List{
+		Id:   id,
+		Name: name,
+	}
+	return l, nil
 }
 
 func (r *DBRepository) Count(name string) (int, error) {
@@ -91,5 +124,14 @@ func (r *DBRepository) Count(name string) (int, error) {
 }
 
 func (r *DBRepository) GetId(name string) (int, error) {
-	return 0, nil
+	var id int
+	err := r.db.QueryRow(GetIdByNameSQL, name).Scan(&id)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, fmt.Errorf("list %q does not exist", name)
+		}
+		return 0, fmt.Errorf("failed to query list: %w", err)
+	}
+
+	return id, nil
 }

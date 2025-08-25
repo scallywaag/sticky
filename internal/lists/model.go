@@ -1,6 +1,6 @@
 package lists
 
 type List struct {
-	Id   int
+	Id   int64
 	Name string
 }
