@@ -41,7 +41,10 @@ func (s *Service) Add(name string) error {
 		return fmt.Errorf("failed to add list: %w", err)
 	}
 
-	s.GetAll()
+	err = s.GetAll()
+	if err != nil {
+		return fmt.Errorf("failed to get lists: %w", err)
+	}
 
 	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
 	return nil
