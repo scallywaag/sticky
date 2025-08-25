@@ -47,6 +47,10 @@ func (r *DBRepository) GetAll() ([]List, error) {
 }
 
 func (r *DBRepository) Add(name string) error {
+	_, err := r.db.Exec(AddSQL, name)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
 	return nil
 }
 
