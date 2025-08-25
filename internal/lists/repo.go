@@ -1,6 +1,9 @@
 package lists
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 type Repository interface {
 	GetAll() ([]List, error)
@@ -21,8 +24,26 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 }
 
 func (r *DBRepository) GetAll() ([]List, error) {
+	rows, err := r.db.Query(GetAllSQL)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
 
-	return nil, nil
+	lists := []List{}
+	for rows.Next() {
+		var l List
+		if err := rows.Scan(&l.Id, &l.Name); err != nil {
+			return nil, fmt.Errorf("scan failed: %w", err)
+		}
+		lists = append(lists, l)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows error: %w", err)
+	}
+
+	return lists, nil
 }
 
 func (r *DBRepository) Add(name string) error {
