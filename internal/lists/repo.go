@@ -42,7 +42,13 @@ func (r *DBRepository) SetActive(name string) (*List, error) {
 }
 
 func (r *DBRepository) Count(name string) (int, error) {
-	return 0, nil
+	var count int
+	err := r.db.QueryRow(CountSQL).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("query	 row failed: %w", err)
+	}
+
+	return count, nil
 }
 
 func (r *DBRepository) GetId(name string) (int, error) {
