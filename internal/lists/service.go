@@ -73,3 +73,17 @@ func (s *Service) GetActive() (*List, error) {
 
 	return l, nil
 }
+
+func (s *Service) SetActive(name string) (*List, error) {
+	id, err := s.repo.GetId(name)
+	if err != nil {
+		return nil, fmt.Errorf("could not get list id: %w", err)
+	}
+
+	l, err := s.repo.SetActive(id, name)
+	if err != nil {
+		return nil, fmt.Errorf("could not set list as active: %w", err)
+	}
+
+	return l, nil
+}
