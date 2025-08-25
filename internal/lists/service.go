@@ -49,3 +49,18 @@ func (s *Service) Add(name string) error {
 	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
 	return nil
 }
+
+func (s *Service) Delete(id int) error {
+	err := s.repo.Delete(id)
+	if err != nil {
+		return fmt.Errorf("failed to delete list: %w", err)
+	}
+
+	err = s.GetAll()
+	if err != nil {
+		return fmt.Errorf("failed to get lists: %w", err)
+	}
+
+	formatter.PrintColored("\nList successfully deleted.", formatter.Yellow)
+	return nil
+}

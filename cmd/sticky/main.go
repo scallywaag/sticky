@@ -56,7 +56,7 @@ func main() {
 			log.Fatal(err)
 		}
 	case f.DelList != 0:
-		err := lists.DelList(f.DelList, db)
+		err := listsService.Delete(f.DelList)
 		if err != nil {
 			log.Fatal(err)
 		}
