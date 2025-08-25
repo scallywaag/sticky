@@ -7,10 +7,10 @@ import (
 
 type Repository interface {
 	GetAll() ([]List, error)
-	Add(name string) error
+	Add(name string) (int, error)
 	Delete(id int) error
 	GetActive() (*List, error)
-	SetActive(name string) (*List, error)
+	SetActive(id int, name string) (*List, error)
 	Count() (int, error)
 	GetId(name string) (int, error)
 }
@@ -113,7 +113,7 @@ func (r *DBRepository) SetActive(id int, name string) (*List, error) {
 	return l, nil
 }
 
-func (r *DBRepository) Count(name string) (int, error) {
+func (r *DBRepository) Count() (int, error) {
 	var count int
 	err := r.db.QueryRow(CountSQL).Scan(&count)
 	if err != nil {
