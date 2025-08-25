@@ -51,7 +51,7 @@ func main() {
 			log.Fatal(err)
 		}
 	case f.AddList != "":
-		err := lists.AddList(f.AddList, db)
+		err := listsService.Add(f.AddList)
 		if err != nil {
 			log.Fatal(err)
 		}

@@ -17,12 +17,12 @@ func NewService(repo Repository) *Service {
 func (s *Service) GetAll() error {
 	count, err := s.repo.Count()
 	if err != nil {
-		return fmt.Errorf("count failed")
+		return fmt.Errorf("count failed: %w", err)
 	}
 
 	lists, err := s.repo.GetAll()
 	if err != nil {
-		return fmt.Errorf("failed to get lists")
+		return fmt.Errorf("failed to get lists: %w", err)
 	}
 
 	formatter.ClearScreen()
@@ -32,5 +32,17 @@ func (s *Service) GetAll() error {
 		formatter.Print(l.Name, l.Id, count, string(formatter.Default), false)
 	}
 
+	return nil
+}
+
+func (s *Service) Add(name string) error {
+	_, err := s.repo.Add(name)
+	if err != nil {
+		return fmt.Errorf("failed to add list: %w", err)
+	}
+
+	s.GetAll()
+
+	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
 	return nil
 }
