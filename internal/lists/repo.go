@@ -46,7 +46,7 @@ func (r *DBRepository) GetAll() ([]List, error) {
 	return lists, nil
 }
 
-func (r *DBRepository) Add(name string) (int64, error) {
+func (r *DBRepository) Add(name string) (int, error) {
 	result, err := r.db.Exec(AddSQL, name)
 	if err != nil {
 		return 0, fmt.Errorf("exec failed: %w", err)
@@ -57,10 +57,10 @@ func (r *DBRepository) Add(name string) (int64, error) {
 		return 0, fmt.Errorf("failed to get last insert id: %w", err)
 	}
 
-	return id, nil
+	return int(id), nil
 }
 
-func (r *DBRepository) Delete(id int64) error {
+func (r *DBRepository) Delete(id int) error {
 	result, err := r.db.Exec(DeleteSQL, id)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
@@ -91,7 +91,7 @@ func (r *DBRepository) GetActive() (*List, error) {
 	return l, nil
 }
 
-func (r *DBRepository) SetActive(id int64, name string) (*List, error) {
+func (r *DBRepository) SetActive(id int, name string) (*List, error) {
 	result, err := r.db.Exec(SetActiveSQL, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to set active list: %w", err)
