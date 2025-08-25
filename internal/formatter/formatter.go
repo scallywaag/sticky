@@ -9,19 +9,6 @@ import (
 	"github.com/highseas-software/sticky/internal/env"
 )
 
-type Color string
-
-const (
-	Red     Color = "\x1b[31m"
-	Green   Color = "\x1b[32m"
-	Yellow  Color = "\x1b[33m"
-	Blue    Color = "\x1b[34m"
-	Default Color = "\x1b[39m"
-
-	Strike = "\x1b[9m"
-	Reset  = "\x1b[0m"
-)
-
 const sep = " - "
 
 func ClearScreen() {
@@ -100,24 +87,4 @@ func Print(content string, currId int, lastId int, color string, cross bool) {
 		padded := leftPad(newContent, maxPad)
 		fmt.Print(padded)
 	}
-}
-
-func getPadDiff(a, b string) int {
-	if len(a) < len(b) {
-		return len(b) - len(a)
-	}
-
-	return 0
-}
-
-func leftPad(str string, spaces int) string {
-	return strings.Repeat(" ", spaces) + str
-}
-
-func formatLine(content string, color string, cross bool) string {
-	formatted := fmt.Sprintf("%s%s%s", color, content, Reset)
-	if cross {
-		formatted = fmt.Sprintf("%s%s", Strike, formatted)
-	}
-	return formatted
 }
