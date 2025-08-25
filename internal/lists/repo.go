@@ -55,6 +55,20 @@ func (r *DBRepository) Add(name string) error {
 }
 
 func (r *DBRepository) Delete(id int) error {
+	result, err := r.db.Exec(DeleteSQL, id)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("could not get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("delete failed: no rows affected")
+	}
+
 	return nil
 }
 
