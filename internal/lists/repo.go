@@ -117,7 +117,7 @@ func (r *DBRepository) Count() (int, error) {
 	var count int
 	err := r.db.QueryRow(CountSQL).Scan(&count)
 	if err != nil {
-		return 0, fmt.Errorf("query	 row failed: %w", err)
+		return 0, fmt.Errorf("query row failed: %w", err)
 	}
 
 	return count, nil

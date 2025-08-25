@@ -21,6 +21,9 @@ func main() {
 	db := database.InitDb()
 	defer db.Close()
 
+	listsRepo := lists.NewDBRepository(db)
+	listsService := lists.NewService(listsRepo)
+
 	switch {
 	case f.Add != "":
 		err := notes.Add(f.Add, c, s, db)
@@ -43,7 +46,7 @@ func main() {
 			log.Fatal(err)
 		}
 	case f.ListLists:
-		err := lists.ListLists(db)
+		err := listsService.GetAll()
 		if err != nil {
 			log.Fatal(err)
 		}
