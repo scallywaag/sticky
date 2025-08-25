@@ -1,5 +1,10 @@
 package flags
 
+import (
+	"fmt"
+	"os"
+)
+
 func validateFlags(f *Flags) {
 	opCount := 0
 	if f.Add != "" {
