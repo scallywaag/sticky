@@ -2,11 +2,6 @@ package flags
 
 import (
 	"flag"
-	"fmt"
-	"os"
-
-	"github.com/highseas-software/sticky/internal/formatter"
-	"github.com/highseas-software/sticky/internal/notes"
 )
 
 func Parse() *Flags {
