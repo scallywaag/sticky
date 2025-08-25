@@ -1,26 +1,26 @@
 package lists
 
 const (
-	CountListsSQL = `SELECT COUNT(*) FROM lists;`
+	CountSQL = `SELECT COUNT(*) FROM lists;`
 
-	GetActiveListSQL = `
+	GetActiveSQL = `
 		SELECT l.id, l.name
 		FROM state s
 		JOIN lists l ON s.list_id = l.id
 		WHERE s.key = 'active';
 	`
 
-	SetActiveListSQL = `
+	SetActiveSQL = `
         UPDATE state
         SET list_id = ?
         WHERE key = 'active';
 	`
 
-	GetListIdByNameSQL = `
+	GetIdByNameSQL = `
 		SELECT id FROM lists WHERE name = ?;
 	`
 
-	ListListsSQL = `
+	GetAllSQL = `
 		WITH ordered_lists AS (
 			SELECT
 				ROW_NUMBER() OVER (ORDER BY id DESC) AS virtual_id,
@@ -31,11 +31,11 @@ const (
 		FROM ordered_lists;
 	`
 
-	AddListSQL = `
+	AddSQL = `
 		INSERT INTO lists(name) VALUES(?);
 	`
 
-	DeleteListSQL = `
+	DeleteSQL = `
 		WITH ordered_lists AS (
 			SELECT
 				ROW_NUMBER() OVER (ORDER BY id DESC) AS virtual_id,
