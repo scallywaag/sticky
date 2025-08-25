@@ -64,3 +64,12 @@ func (s *Service) Delete(id int) error {
 	formatter.PrintColored("\nList successfully deleted.", formatter.Yellow)
 	return nil
 }
+
+func (s *Service) GetActive() (*List, error) {
+	l, err := s.repo.GetActive()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get active list: %w", err)
+	}
+
+	return l, nil
+}
