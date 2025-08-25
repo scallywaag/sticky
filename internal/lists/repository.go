@@ -9,12 +9,12 @@ import (
 
 func ListLists(db *sql.DB) error {
 	var count int
-	err := db.QueryRow(CountListsSQL).Scan(&count)
+	err := db.QueryRow(CountSQL).Scan(&count)
 	if err != nil {
 		return fmt.Errorf("query row failed: %w", err)
 	}
 
-	stmt, err := db.Prepare(ListListsSQL)
+	stmt, err := db.Prepare(GetAllSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -46,7 +46,7 @@ func ListLists(db *sql.DB) error {
 }
 
 func AddList(name string, db *sql.DB) error {
-	stmt, err := db.Prepare(AddListSQL)
+	stmt, err := db.Prepare(AddSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -63,7 +63,7 @@ func AddList(name string, db *sql.DB) error {
 }
 
 func DelList(id int, db *sql.DB) error {
-	stmt, err := db.Prepare(DeleteListSQL)
+	stmt, err := db.Prepare(DeleteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -90,7 +90,7 @@ func DelList(id int, db *sql.DB) error {
 
 func GetActiveList(db *sql.DB) (*List, error) {
 	l := &List{}
-	err := db.QueryRow(GetActiveListSQL).Scan(&l.Id, &l.Name)
+	err := db.QueryRow(GetActiveSQL).Scan(&l.Id, &l.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("no active list found: %w", err)
@@ -103,7 +103,7 @@ func GetActiveList(db *sql.DB) (*List, error) {
 
 func SetActiveList(name string, db *sql.DB) (*List, error) {
 	var listId int
-	err := db.QueryRow(GetListIdByNameSQL, name).Scan(&listId)
+	err := db.QueryRow(GetIdByNameSQL, name).Scan(&listId)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, fmt.Errorf("list %q does not exist", name)
@@ -111,7 +111,7 @@ func SetActiveList(name string, db *sql.DB) (*List, error) {
 		return nil, fmt.Errorf("failed to query list: %w", err)
 	}
 
-	_, err = db.Exec(SetActiveListSQL, listId)
+	_, err = db.Exec(SetActiveSQL, listId)
 	if err != nil {
 		return nil, fmt.Errorf("failed to set active list: %w", err)
 	}
