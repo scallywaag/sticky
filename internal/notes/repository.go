@@ -26,12 +26,12 @@ func List(name string, db *sql.DB) error {
 	}
 
 	var count int
-	err = db.QueryRow(CountNotesSQL, activeList.Id).Scan(&count)
+	err = db.QueryRow(CountSQL, activeList.Id).Scan(&count)
 	if err != nil {
 		return fmt.Errorf("query row failed: %w", err)
 	}
 
-	stmt, err := db.Prepare(ListNotesSQL)
+	stmt, err := db.Prepare(GetAllSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -69,7 +69,7 @@ func Add(content string, color formatter.Color, status NoteStatus, db *sql.DB) e
 		return fmt.Errorf("failed to get active list: %w", err)
 	}
 
-	stmt, err := db.Prepare(AddNoteSQL)
+	stmt, err := db.Prepare(AddSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -101,7 +101,7 @@ func Del(id int, db *sql.DB) error {
 		return fmt.Errorf("failed to get active list: %w", err)
 	}
 
-	stmt, err := db.Prepare(DeleteNoteSQL)
+	stmt, err := db.Prepare(DeleteSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
@@ -143,7 +143,7 @@ func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
 		return fmt.Errorf("query row failed: %w", err)
 	}
 
-	stmt, err := db.Prepare(MutateNoteSQL)
+	stmt, err := db.Prepare(MutateSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}

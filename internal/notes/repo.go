@@ -1,6 +1,9 @@
 package notes
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 type Repository interface {
 	GetAll(name string) ([]Note, error)
@@ -19,8 +22,30 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 	return &DBRepository{db: db}
 }
 
-func (r *DBRepository) GetAll(name string) ([]Note, error) {
-	return nil, nil
+func (r *DBRepository) GetAll(activeListId string) ([]Note, error) {
+	rows, err := r.db.Query(GetAllSQL, activeListId)
+	if err != nil {
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+	defer rows.Close()
+
+	notes := []Note{}
+	for rows.Next() {
+		n := Note{}
+
+		err = rows.Scan(&n.VirtualId, &n.Content, &n.Color, &n.Status)
+		if err != nil {
+			return nil, fmt.Errorf("scan failed: %w", err)
+		}
+
+		notes = append(notes, n)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows error: %w", err)
+	}
+
+	return notes, nil
 }
 
 func (r *DBRepository) Add(note *Note) error {

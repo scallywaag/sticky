@@ -1,9 +1,9 @@
 package notes
 
 const (
-	CountNotesSQL = `SELECT COUNT(*) FROM notes WHERE list_id = ?;`
+	CountSQL = `SELECT COUNT(*) FROM notes WHERE list_id = ?;`
 
-	ListNotesSQL = `
+	GetAllSQL = `
 		WITH ordered_notes AS (
 			SELECT
 				ROW_NUMBER() OVER (
@@ -25,12 +25,12 @@ const (
 		FROM ordered_notes;
 	`
 
-	AddNoteSQL = `
+	AddSQL = `
 		INSERT INTO notes(content, color, status, list_id)
 		VALUES(?, ?, ?, ?);
 	`
 
-	DeleteNoteSQL = `
+	DeleteSQL = `
 		WITH ordered_notes AS (
 			SELECT
 				ROW_NUMBER() OVER (
@@ -72,7 +72,7 @@ const (
 		WHERE virtual_id = ?;
 	`
 
-	MutateNoteSQL = `
+	MutateSQL = `
 		WITH ordered_notes AS (
 			SELECT
 				ROW_NUMBER() OVER (
