@@ -3,6 +3,8 @@ package notes
 import (
 	"database/sql"
 	"fmt"
+
+	"github.com/highseas-software/sticky/internal/formatter"
 )
 
 type Repository interface {
@@ -93,8 +95,17 @@ func (r *DBRepository) Update(note *Note, activeListId int) error {
 	return nil
 }
 
-func (r *DBRepository) GetMutations(id int) error {
-	return nil
+func (r *DBRepository) GetMutations(id, activeListId int) (formatter.Color, NoteStatus, error) {
+	var currentColor formatter.Color
+	var currentStatus NoteStatus
+
+	err := r.db.QueryRow(GetMutationsSQL, activeListId, id).
+		Scan(&currentColor, &currentStatus)
+	if err != nil {
+		return "", "", fmt.Errorf("query row failed: %w", err)
+	}
+
+	return currentColor, currentStatus, nil
 }
 
 func (r *DBRepository) Count(id int) (int, error) {
