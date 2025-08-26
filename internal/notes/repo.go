@@ -8,11 +8,11 @@ import (
 )
 
 type Repository interface {
-	GetAll(name string) ([]Note, error)
-	Add(note *Note) error
-	Delete(id int) error
-	Update(id int) error
-	GetMutations(id int) error
+	GetAll(activeListId int) ([]Note, error)
+	Add(note *Note, activeListId int) error
+	Delete(id, activeListId int) error
+	Update(id, activeListId int) error
+	GetMutations(id, activeListId int) (formatter.Color, NoteStatus, error)
 	Count(id int) (int, error)
 }
 
@@ -24,7 +24,7 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 	return &DBRepository{db: db}
 }
 
-func (r *DBRepository) GetAll(activeListId string) ([]Note, error) {
+func (r *DBRepository) GetAll(activeListId int) ([]Note, error) {
 	rows, err := r.db.Query(GetAllSQL, activeListId)
 	if err != nil {
 		return nil, fmt.Errorf("query failed: %w", err)
