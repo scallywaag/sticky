@@ -16,7 +16,7 @@ type Flags struct {
 	Blue   bool
 
 	// lists
-	ListLists bool
-	AddList   string
-	DelList   int
+	GetAllLists bool
+	AddList     string
+	DelList     int
 }

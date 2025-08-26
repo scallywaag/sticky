@@ -48,7 +48,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.ListLists:
+	case f.GetAllLists:
 		err := listsService.GetAll()
 		if err != nil {
 			log.Fatal(err)
