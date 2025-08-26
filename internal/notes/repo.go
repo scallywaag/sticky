@@ -97,6 +97,11 @@ func (r *DBRepository) GetMutations(id int) error {
 	return nil
 }
 
-func (r *DBRepository) Count(id int) error {
-	return nil
+func (r *DBRepository) Count(id int) (int, error) {
+	var count int
+	err := r.db.QueryRow(CountSQL, id).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("query row failed: %w", err)
+	}
+	return count, nil
 }
