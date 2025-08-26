@@ -17,7 +17,7 @@ func leftPad(str string, spaces int) string {
 	return strings.Repeat(" ", spaces) + str
 }
 
-func formatLine(content string, color string, cross bool) string {
+func formatLine(content string, color Color, cross bool) string {
 	formatted := fmt.Sprintf("%s%s%s", color, content, Reset)
 	if cross {
 		formatted = fmt.Sprintf("%s%s", Strike, formatted)

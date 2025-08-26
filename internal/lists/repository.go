@@ -36,7 +36,7 @@ func ListLists(db *sql.DB) error {
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
-		formatter.Print(l.Name, l.Id, count, string(formatter.Default), false)
+		formatter.Print(l.Name, l.Id, count, formatter.Default, false)
 	}
 
 	if err = rows.Err(); err != nil {

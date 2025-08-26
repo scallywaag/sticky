@@ -29,7 +29,7 @@ func (s *Service) GetAll() error {
 	formatter.PrintListHeader("lists", count)
 
 	for _, l := range lists {
-		formatter.Print(l.Name, l.Id, count, string(formatter.Default), false)
+		formatter.Print(l.Name, l.Id, count, formatter.Default, false)
 	}
 
 	return nil
