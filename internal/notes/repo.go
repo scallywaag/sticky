@@ -11,7 +11,7 @@ type Repository interface {
 	GetAll(activeListId int) ([]Note, error)
 	Add(note *Note, activeListId int) error
 	Delete(id, activeListId int) error
-	Update(id, activeListId int) error
+	Update(note *Note, activeListId int) error
 	GetMutations(id, activeListId int) (formatter.Color, NoteStatus, error)
 	Count(id int) (int, error)
 }

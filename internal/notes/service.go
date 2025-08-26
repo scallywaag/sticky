@@ -72,11 +72,11 @@ func (s *Service) Add(content string, color formatter.Color, status NoteStatus) 
 		c = formatter.Default
 	}
 
-	st := status
-	if st == "" {
-		st = StatusDefault
+	x := status
+	if x == "" {
+		x = StatusDefault
 	}
-	n := &Note{Content: content, Color: c, Status: st}
+	n := &Note{Content: content, Color: c, Status: x}
 	err = s.repo.Add(n, activeList.Id)
 	if err != nil {
 		return fmt.Errorf("failed to add note: %w", err)
@@ -108,5 +108,34 @@ func (s *Service) Delete(id int) error {
 	}
 
 	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
+	return nil
+}
+
+func (s *Service) Update(id int, color formatter.Color, status NoteStatus) error {
+	activeList, err := s.listsRepo.GetActive()
+	if err != nil {
+		return fmt.Errorf("failed to get active list: %w", err)
+	}
+
+	currentColor, currentStatus, err := s.repo.GetMutations(id, activeList.Id)
+	if err != nil {
+		return fmt.Errorf("failed to get existing mutations: %w", err)
+	}
+
+	c := mutateColor(currentColor, color)
+	x := toggleStatus(currentStatus, status)
+
+	n := &Note{Id: id, Color: c, Status: x}
+	err = s.repo.Update(n, activeList.Id)
+	if err != nil {
+		return fmt.Errorf("failed to update note: %w", err)
+	}
+
+	err = s.GetAll(activeList.Name)
+	if err != nil {
+		return fmt.Errorf("could not retrieve notes list: %w", err)
+	}
+
+	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
 	return nil
 }
