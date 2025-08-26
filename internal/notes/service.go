@@ -60,3 +60,20 @@ func (s *Service) GetAll(listName string) error {
 
 	return nil
 }
+
+func (s *Service) Delete(id int) error {
+	activeList, err := s.listsRepo.GetActive()
+	if err != nil {
+		return fmt.Errorf("failed to get active list: %w", err)
+	}
+
+	err = s.repo.Delete(id, activeList.Id)
+	if err != nil {
+		return fmt.Errorf("failed to get delete note: %w", err)
+	}
+
+	s.GetAll(activeList.Name)
+
+	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
+	return nil
+}
