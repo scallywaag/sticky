@@ -24,24 +24,27 @@ func main() {
 	listsRepo := lists.NewDBRepository(db)
 	listsService := lists.NewService(listsRepo)
 
+	notesRepo := notes.NewDBRepository(db)
+	notesService := notes.NewService(notesRepo, listsRepo)
+
 	switch {
 	case f.Add != "":
-		err := notes.Add(f.Add, c, s, db)
+		err := notesService.Add(f.Add, c, s)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case f.List != "":
-		err := notes.List(f.List, db)
+		err := notesService.GetAll(f.List)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case f.Del != 0:
-		err := notes.Del(f.Del, db)
+		err := notesService.Delete(f.Del)
 		if err != nil {
 			log.Fatal(err)
 		}
 	case f.Mut != 0:
-		err := notes.Mut(f.Mut, c, s, db)
+		err := notesService.Update(f.Mut, c, s)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -61,7 +64,7 @@ func main() {
 			log.Fatal(err)
 		}
 	default:
-		err := notes.List(f.List, db)
+		err := notesService.GetAll(f.List)
 		if err != nil {
 			log.Fatal(err)
 		}
