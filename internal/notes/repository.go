@@ -48,13 +48,13 @@ func List(name string, db *sql.DB) error {
 	for rows.Next() {
 		n := Note{}
 
-		err = rows.Scan(&n.VirtualId, &n.Content, &n.Color, &n.Status)
+		err = rows.Scan(&n.Id, &n.Content, &n.Color, &n.Status)
 		if err != nil {
 			return fmt.Errorf("scan failed: %w", err)
 		}
 
 		cross := n.Status == StatusCross
-		formatter.Print(n.Content, n.VirtualId, count, n.Color, cross)
+		formatter.Print(n.Content, n.Id, count, n.Color, cross)
 	}
 
 	if err = rows.Err(); err != nil {
