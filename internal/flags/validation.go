@@ -19,7 +19,7 @@ func validateFlags(f *Flags) {
 	if f.Mut > 0 {
 		opCount++
 	}
-	if f.ListLists {
+	if f.GetAllLists {
 		opCount++
 	}
 	if f.AddList != "" {

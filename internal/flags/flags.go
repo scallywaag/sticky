@@ -32,8 +32,8 @@ func Parse() *Flags {
 	flag.BoolVar(&f.Yellow, "y", false, "")
 	flag.BoolVar(&f.Yellow, "yellow", false, "")
 
-	flag.BoolVar(&f.ListLists, "ls", false, "")
-	flag.BoolVar(&f.ListLists, "lists", false, "")
+	flag.BoolVar(&f.GetAllLists, "ls", false, "")
+	flag.BoolVar(&f.GetAllLists, "lists", false, "")
 	flag.StringVar(&f.AddList, "la", "", "")
 	flag.StringVar(&f.AddList, "list-add", "", "")
 	flag.IntVar(&f.DelList, "ld", 0, "")
