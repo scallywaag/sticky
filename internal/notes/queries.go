@@ -72,7 +72,7 @@ const (
 		WHERE virtual_id = ?;
 	`
 
-	MutateSQL = `
+	UpdateSQL = `
 		WITH ordered_notes AS (
 			SELECT
 				ROW_NUMBER() OVER (

@@ -33,7 +33,7 @@ func (r *DBRepository) GetAll(activeListId string) ([]Note, error) {
 	for rows.Next() {
 		n := Note{}
 
-		err = rows.Scan(&n.VirtualId, &n.Content, &n.Color, &n.Status)
+		err = rows.Scan(&n.Id, &n.Content, &n.Color, &n.Status)
 		if err != nil {
 			return nil, fmt.Errorf("scan failed: %w", err)
 		}
@@ -75,7 +75,21 @@ func (r *DBRepository) Delete(id int, activeListId int) error {
 	return nil
 }
 
-func (r *DBRepository) Update(id int) error {
+func (r *DBRepository) Update(note *Note, activeListId int) error {
+	result, err := r.db.Exec(UpdateSQL, activeListId, note.Color, note.Status, note.Id)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("could not get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("delete failed: no rows affected")
+	}
+
 	return nil
 }
 

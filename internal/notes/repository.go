@@ -143,7 +143,7 @@ func Mut(id int, color formatter.Color, status NoteStatus, db *sql.DB) error {
 		return fmt.Errorf("query row failed: %w", err)
 	}
 
-	stmt, err := db.Prepare(MutateSQL)
+	stmt, err := db.Prepare(UpdateSQL)
 	if err != nil {
 		return fmt.Errorf("prepare failed: %w", err)
 	}
