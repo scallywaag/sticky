@@ -48,7 +48,12 @@ func (r *DBRepository) GetAll(activeListId string) ([]Note, error) {
 	return notes, nil
 }
 
-func (r *DBRepository) Add(note *Note) error {
+func (r *DBRepository) Add(note *Note, activeListId int) error {
+	_, err := r.db.Exec(AddSQL, note.Content, note.Color, note.Status, activeListId)
+	if err != nil {
+		return fmt.Errorf("exec failed: %w", err)
+	}
+
 	return nil
 }
 
