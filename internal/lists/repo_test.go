@@ -94,3 +94,13 @@ func TestAdd(t *testing.T) {
 		t.Errorf("expected valid id > 0, got %d", id)
 	}
 }
+
+func TestDelete(t *testing.T) {
+	repo := getRepo(t)
+	loadFixture(t, repo.db)
+
+	err := repo.Delete(1)
+	if err != nil {
+		t.Fatalf("Delete returned error: %v", err)
+	}
+}
