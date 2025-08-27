@@ -33,7 +33,7 @@ func PrintListHeader(name string, lastId int) {
 	fmt.Print(padded)
 }
 
-func Print(content string, currId int, lastId int, color Color, cross bool) {
+func PrintContent(content string, currId int, lastId int, color Color, cross bool) {
 	curr := strconv.Itoa(currId)
 	last := strconv.Itoa(lastId)
 

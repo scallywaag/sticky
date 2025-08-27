@@ -54,7 +54,7 @@ func List(name string, db *sql.DB) error {
 		}
 
 		cross := n.Status == StatusCross
-		formatter.Print(n.Content, n.Id, count, n.Color, cross)
+		formatter.PrintContent(n.Content, n.Id, count, n.Color, cross)
 	}
 
 	if err = rows.Err(); err != nil {

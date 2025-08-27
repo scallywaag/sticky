@@ -55,7 +55,7 @@ func (s *Service) GetAll(listName string) error {
 
 	for _, n := range notes {
 		cross := n.Status == StatusCross
-		formatter.Print(n.Content, n.Id, count, n.Color, cross)
+		formatter.PrintContent(n.Content, n.Id, count, n.Color, cross)
 	}
 
 	return nil

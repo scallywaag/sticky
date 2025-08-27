@@ -14,6 +14,13 @@ func NewService(repo Repository) *Service {
 	return &Service{repo: repo}
 }
 
+var (
+	clearScreen     = formatter.ClearScreen
+	printListHeader = formatter.PrintListHeader
+	printContent    = formatter.PrintContent
+	printColored    = formatter.PrintColored
+)
+
 func (s *Service) GetAll() error {
 	count, err := s.repo.Count()
 	if err != nil {
@@ -25,11 +32,11 @@ func (s *Service) GetAll() error {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
 
-	formatter.ClearScreen()
-	formatter.PrintListHeader("lists", count)
+	clearScreen()
+	printListHeader("lists", count)
 
 	for _, l := range lists {
-		formatter.Print(l.Name, l.Id, count, formatter.Default, false)
+		printContent(l.Name, l.Id, count, formatter.Default, false)
 	}
 
 	return nil
@@ -46,7 +53,7 @@ func (s *Service) Add(name string) error {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
 
-	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
+	printColored("\nList successfully added.", formatter.Yellow)
 	return nil
 }
 
@@ -61,7 +68,7 @@ func (s *Service) Delete(id int) error {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
 
-	formatter.PrintColored("\nList successfully deleted.", formatter.Yellow)
+	printColored("\nList successfully deleted.", formatter.Yellow)
 	return nil
 }
 
