@@ -13,8 +13,8 @@ import (
 func setupTestDB(t *testing.T) *sql.DB {
 	t.Helper()
 
-	os.Setenv("APP_ENV", "test")
-	defer os.Unsetenv("APP_ENV")
+	os.Setenv("STICKY_ENV", "test")
+	defer os.Unsetenv("STICKY_ENV")
 
 	db := database.InitDb()
 	return db
