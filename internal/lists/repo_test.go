@@ -18,8 +18,14 @@ var listsSeed string
 func setupTestDB(t *testing.T) *sql.DB {
 	t.Helper()
 
-	os.Setenv("STICKY_ENV", "test")
-	defer os.Unsetenv("STICKY_ENV")
+	if err := os.Setenv("STICKY_ENV", "test"); err != nil {
+		t.Fatalf("failed to set STICKY_ENV: %v", err)
+	}
+	defer func() {
+		if err := os.Unsetenv("STICKY_ENV"); err != nil {
+			t.Fatalf("failed to unset STICKY_ENV: %v", err)
+		}
+	}()
 
 	db := database.InitDb()
 	return db
@@ -29,15 +35,23 @@ func getRepo(t *testing.T) *DBRepository {
 	t.Helper()
 
 	db := setupTestDB(t)
-	repo := NewDBRepository(db)
-	return repo
+	return NewDBRepository(db)
 }
 
 func loadFixture(t *testing.T, db *sql.DB) {
 	t.Helper()
-	_, err := db.Exec(listsSeed)
+
+	if db == nil {
+		t.Fatal("cannot load fixture into nil db")
+	}
+
+	result, err := db.Exec(listsSeed)
 	if err != nil {
-		t.Fatalf("failed to exec fixture: %v", err)
+		t.Fatalf("failed to exec fixture SQL: %v", err)
+	}
+
+	if rows, _ := result.RowsAffected(); rows == 0 {
+		t.Logf("warning: fixture executed but affected 0 rows")
 	}
 }
 
@@ -56,7 +70,6 @@ func TestGetAll_WithDefaultList(t *testing.T) {
 
 func TestGetAll_WithFixture(t *testing.T) {
 	repo := getRepo(t)
-
 	loadFixture(t, repo.db)
 
 	lists, err := repo.GetAll()
@@ -72,8 +85,12 @@ func TestGetAll_WithFixture(t *testing.T) {
 func TestAdd(t *testing.T) {
 	repo := getRepo(t)
 
-	_, err := repo.Add("test-list")
+	id, err := repo.Add("test-list")
 	if err != nil {
-		t.Errorf("Add returned error: %v", err)
+		t.Fatalf("Add returned error: %v", err)
+	}
+
+	if id <= 0 {
+		t.Errorf("expected valid id > 0, got %d", id)
 	}
 }
