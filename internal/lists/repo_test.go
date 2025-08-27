@@ -152,7 +152,7 @@ func TestGetActive_WithFixture(t *testing.T) {
 	}
 }
 
-func SetActive_WithFixture(t *testing.T) {
+func TestSetActive_WithFixture(t *testing.T) {
 	repo := getRepo(t)
 	loadFixture(t, repo.db)
 
@@ -169,5 +169,19 @@ func SetActive_WithFixture(t *testing.T) {
 			"want '%d - %s', got '%d - %s'",
 			wantId, wantName, l.Id, l.Name,
 		)
+	}
+}
+
+func TestCount(t *testing.T) {
+	repo := getRepo(t)
+
+	want := 1
+	got, err := repo.Count()
+	if err != nil {
+		t.Fatalf("Count returned error: %v", err)
+	}
+
+	if want != got {
+		t.Errorf("want %d, got %d", want, got)
 	}
 }
