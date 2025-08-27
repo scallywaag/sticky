@@ -1,11 +1,9 @@
 package lists
 
 import (
-	"database/sql"
-	"os"
 	"testing"
 
-	"github.com/highseas-software/sticky/internal/database"
+	"github.com/highseas-software/sticky/internal/testutils"
 
 	_ "github.com/mattn/go-sqlite3"
 
@@ -15,44 +13,11 @@ import (
 //go:embed testdata/lists_seed.sql
 var listsSeed string
 
-func setupTestDB(t *testing.T) *sql.DB {
-	t.Helper()
-
-	if err := os.Setenv("STICKY_ENV", "test"); err != nil {
-		t.Fatalf("failed to set STICKY_ENV: %v", err)
-	}
-	defer func() {
-		if err := os.Unsetenv("STICKY_ENV"); err != nil {
-			t.Fatalf("failed to unset STICKY_ENV: %v", err)
-		}
-	}()
-
-	db := database.InitDb()
-	return db
-}
-
 func getRepo(t *testing.T) *DBRepository {
 	t.Helper()
 
-	db := setupTestDB(t)
+	db := testutils.SetupTestDB(t)
 	return NewDBRepository(db)
-}
-
-func loadFixture(t *testing.T, db *sql.DB) {
-	t.Helper()
-
-	if db == nil {
-		t.Fatal("cannot load fixture into nil db")
-	}
-
-	result, err := db.Exec(listsSeed)
-	if err != nil {
-		t.Fatalf("failed to exec fixture SQL: %v", err)
-	}
-
-	if rows, _ := result.RowsAffected(); rows == 0 {
-		t.Logf("warning: fixture executed but affected 0 rows")
-	}
 }
 
 func TestGetAll_WithDefaultList(t *testing.T) {
@@ -80,7 +45,7 @@ func TestGetAll_WithDefaultList(t *testing.T) {
 
 func TestGetAll_WithFixture(t *testing.T) {
 	repo := getRepo(t)
-	loadFixture(t, repo.db)
+	testutils.LoadFixture(t, repo.db, listsSeed)
 
 	lists, err := repo.GetAll()
 	if err != nil {
@@ -107,7 +72,7 @@ func TestAdd(t *testing.T) {
 
 func TestDelete(t *testing.T) {
 	repo := getRepo(t)
-	loadFixture(t, repo.db)
+	testutils.LoadFixture(t, repo.db, listsSeed)
 
 	err := repo.Delete(1)
 	if err != nil {
@@ -135,7 +100,7 @@ func TestGetActive(t *testing.T) {
 
 func TestGetActive_WithFixture(t *testing.T) {
 	repo := getRepo(t)
-	loadFixture(t, repo.db)
+	testutils.LoadFixture(t, repo.db, listsSeed)
 
 	l, err := repo.GetActive()
 	if err != nil {
@@ -154,7 +119,7 @@ func TestGetActive_WithFixture(t *testing.T) {
 
 func TestSetActive_WithFixture(t *testing.T) {
 	repo := getRepo(t)
-	loadFixture(t, repo.db)
+	testutils.LoadFixture(t, repo.db, listsSeed)
 
 	wantId := 2
 	wantName := "work"
@@ -188,7 +153,7 @@ func TestCount(t *testing.T) {
 
 func TestCount_WithFixtures(t *testing.T) {
 	repo := getRepo(t)
-	loadFixture(t, repo.db)
+	testutils.LoadFixture(t, repo.db, listsSeed)
 
 	want := 3
 	got, err := repo.Count()
