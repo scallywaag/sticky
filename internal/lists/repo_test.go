@@ -28,7 +28,7 @@ func getRepo(t *testing.T) *DBRepository {
 	return repo
 }
 
-func loadFixture(t *testing.T, path string) {
+func loadFixture(t *testing.T, db *sql.DB, path string) {
 	t.Helper()
 
 	content, err := os.ReadFile(path)
@@ -36,9 +36,7 @@ func loadFixture(t *testing.T, path string) {
 		t.Fatalf("failed to read fixture file: %v", err)
 	}
 
-	repo := getRepo(t)
-
-	_, err = repo.db.Exec(string(content))
+	_, err = db.Exec(string(content))
 	if err != nil {
 		t.Fatalf("failed to execute fixture SQL: %v", err)
 	}
