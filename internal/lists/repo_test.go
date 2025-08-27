@@ -20,9 +20,32 @@ func setupTestDB(t *testing.T) *sql.DB {
 	return db
 }
 
-func TestGetAll(t *testing.T) {
+func getRepo(t *testing.T) *DBRepository {
+	t.Helper()
+
 	db := setupTestDB(t)
 	repo := NewDBRepository(db)
+	return repo
+}
+
+func loadFixture(t *testing.T, path string) {
+	t.Helper()
+
+	content, err := os.ReadFile(path)
+	if err != nil {
+		t.Fatalf("failed to read fixture file: %v", err)
+	}
+
+	repo := getRepo(t)
+
+	_, err = repo.db.Exec(string(content))
+	if err != nil {
+		t.Fatalf("failed to execute fixture SQL: %v", err)
+	}
+}
+
+func TestGetAll(t *testing.T) {
+	repo := getRepo(t)
 
 	lists, err := repo.GetAll()
 	if err != nil {
@@ -31,5 +54,14 @@ func TestGetAll(t *testing.T) {
 
 	if len(lists) == 0 {
 		t.Errorf("expected default 'sticky' list, got none")
+	}
+}
+
+func TestAdd(t *testing.T) {
+	repo := getRepo(t)
+
+	_, err := repo.Add("test-list")
+	if err != nil {
+		t.Errorf("Add returned error: %v", err)
 	}
 }
