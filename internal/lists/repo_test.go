@@ -151,3 +151,23 @@ func TestGetActive_WithFixture(t *testing.T) {
 		)
 	}
 }
+
+func SetActive_WithFixture(t *testing.T) {
+	repo := getRepo(t)
+	loadFixture(t, repo.db)
+
+	wantId := 2
+	wantName := "work"
+
+	l, err := repo.SetActive(wantId, wantName) // seems redundant to send both
+	if err != nil {
+		t.Fatalf("SetActive returned error: %v", err)
+	}
+
+	if l.Id != wantId || l.Name != wantName {
+		t.Errorf(
+			"want '%d - %s', got '%d - %s'",
+			wantId, wantName, l.Id, l.Name,
+		)
+	}
+}
