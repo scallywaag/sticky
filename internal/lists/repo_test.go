@@ -104,3 +104,21 @@ func TestDelete(t *testing.T) {
 		t.Fatalf("Delete returned error: %v", err)
 	}
 }
+
+func TestGetActive(t *testing.T) {
+	repo := getRepo(t)
+
+	l, err := repo.GetActive()
+	if err != nil {
+		t.Fatalf("GetActive returned error: %v", err)
+	}
+
+	defaultId := 1
+	defaultName := "sticky"
+	if l.Id != defaultId || l.Name != defaultName {
+		t.Errorf(
+			"default list '%d - %s' should be active, received '%d - %s'",
+			defaultId, defaultName, l.Id, l.Name,
+		)
+	}
+}
