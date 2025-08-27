@@ -64,7 +64,17 @@ func TestGetAll_WithDefaultList(t *testing.T) {
 	}
 
 	if len(lists) == 0 {
-		t.Errorf("expected default 'sticky' list, got none")
+		t.Errorf("want 1 list, got none")
+	}
+
+	wantId := 1
+	wantName := "sticky"
+	got := lists[0]
+	if got.Id != wantId || got.Name != wantName {
+		t.Errorf(
+			"want '%d - %s', got '%d - %s'",
+			wantId, wantName, got.Id, got.Name,
+		)
 	}
 }
 
@@ -78,7 +88,7 @@ func TestGetAll_WithFixture(t *testing.T) {
 	}
 
 	if len(lists) != 3 {
-		t.Errorf("expected 3 lists from fixture, got %d", len(lists))
+		t.Errorf("want 3 lists from fixture, got %d", len(lists))
 	}
 }
 
@@ -91,7 +101,7 @@ func TestAdd(t *testing.T) {
 	}
 
 	if id <= 0 {
-		t.Errorf("expected valid id > 0, got %d", id)
+		t.Errorf("id > 0, got %d", id)
 	}
 }
 
@@ -113,12 +123,31 @@ func TestGetActive(t *testing.T) {
 		t.Fatalf("GetActive returned error: %v", err)
 	}
 
-	defaultId := 1
-	defaultName := "sticky"
-	if l.Id != defaultId || l.Name != defaultName {
+	wantId := 1
+	wantName := "sticky"
+	if l.Id != wantId || l.Name != wantName {
 		t.Errorf(
-			"default list '%d - %s' should be active, received '%d - %s'",
-			defaultId, defaultName, l.Id, l.Name,
+			"want '%d - %s', got '%d - %s'",
+			wantId, wantName, l.Id, l.Name,
+		)
+	}
+}
+
+func TestGetActive_WithFixture(t *testing.T) {
+	repo := getRepo(t)
+	loadFixture(t, repo.db)
+
+	l, err := repo.GetActive()
+	if err != nil {
+		t.Fatalf("GetActive returned error: %v", err)
+	}
+
+	wantId := 2
+	wantName := "work"
+	if l.Id != wantId || l.Name != wantName {
+		t.Errorf(
+			"want '%d - %s', got '%d - %s'",
+			wantId, wantName, l.Id, l.Name,
 		)
 	}
 }
