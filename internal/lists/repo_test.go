@@ -55,10 +55,9 @@ func TestGetAll_WithDefaultList(t *testing.T) {
 }
 
 func TestGetAll_WithFixture(t *testing.T) {
-	db := setupTestDB(t)
-	repo := NewDBRepository(db)
+	repo := getRepo(t)
 
-	loadFixture(t, db)
+	loadFixture(t, repo.db)
 
 	lists, err := repo.GetAll()
 	if err != nil {
