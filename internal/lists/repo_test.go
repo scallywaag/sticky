@@ -8,7 +8,12 @@ import (
 	"github.com/highseas-software/sticky/internal/database"
 
 	_ "github.com/mattn/go-sqlite3"
+
+	_ "embed"
 )
+
+//go:embed testdata/lists_seed.sql
+var listsSeed string
 
 func setupTestDB(t *testing.T) *sql.DB {
 	t.Helper()
@@ -28,21 +33,15 @@ func getRepo(t *testing.T) *DBRepository {
 	return repo
 }
 
-func loadFixture(t *testing.T, db *sql.DB, path string) {
+func loadFixture(t *testing.T, db *sql.DB) {
 	t.Helper()
-
-	content, err := os.ReadFile(path)
+	_, err := db.Exec(listsSeed)
 	if err != nil {
-		t.Fatalf("failed to read fixture file: %v", err)
-	}
-
-	_, err = db.Exec(string(content))
-	if err != nil {
-		t.Fatalf("failed to execute fixture SQL: %v", err)
+		t.Fatalf("failed to exec fixture: %v", err)
 	}
 }
 
-func TestGetAll(t *testing.T) {
+func TestGetAll_WithDefaultList(t *testing.T) {
 	repo := getRepo(t)
 
 	lists, err := repo.GetAll()
@@ -52,6 +51,22 @@ func TestGetAll(t *testing.T) {
 
 	if len(lists) == 0 {
 		t.Errorf("expected default 'sticky' list, got none")
+	}
+}
+
+func TestGetAll_WithFixture(t *testing.T) {
+	db := setupTestDB(t)
+	repo := NewDBRepository(db)
+
+	loadFixture(t, db)
+
+	lists, err := repo.GetAll()
+	if err != nil {
+		t.Fatalf("GetAll returned error: %v", err)
+	}
+
+	if len(lists) != 3 {
+		t.Errorf("expected 3 lists from fixture, got %d", len(lists))
 	}
 }
 
