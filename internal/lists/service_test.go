@@ -23,7 +23,7 @@ func TestListsService(t *testing.T) {
 			printed = append(printed, fmt.Sprintf("%s:%d", name, id))
 		}
 
-		mock := &MockListRepo{
+		mock := &MockRepo{
 			count: 1,
 			lists: []List{{Id: 1, Name: "default"}},
 		}
