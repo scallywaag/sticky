@@ -14,10 +14,7 @@ import (
 var listsSeed string
 
 func getRepo(t *testing.T) *DBRepository {
-	t.Helper()
-
-	db := testutils.SetupTestDB(t)
-	return NewDBRepository(db)
+	return testutils.GetRepo(t, NewDBRepository)
 }
 
 func TestGetAll_WithDefaultList(t *testing.T) {
