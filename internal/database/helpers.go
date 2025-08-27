@@ -5,13 +5,10 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/highseas-software/sticky/internal/config"
 	"github.com/highseas-software/sticky/internal/env"
 )
 
-func getDbPath() string {
-	appEnv := config.GetAppEnv()
-
+func getDbPath(appEnv env.StickyEnv) string {
 	var dbDir, filename string
 
 	switch appEnv {
@@ -30,14 +27,6 @@ func getDbPath() string {
 		}
 		dbDir = cwd
 		filename = "sticky.db"
-
-	case env.EnvTest:
-		cwd, err := os.Getwd()
-		if err != nil {
-			log.Fatal(err)
-		}
-		dbDir = cwd
-		filename = "sticky.test.db"
 	}
 
 	dbPath := filepath.Join(dbDir, filename)
