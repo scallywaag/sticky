@@ -185,3 +185,18 @@ func TestCount(t *testing.T) {
 		t.Errorf("want %d, got %d", want, got)
 	}
 }
+
+func TestCount_WithFixtures(t *testing.T) {
+	repo := getRepo(t)
+	loadFixture(t, repo.db)
+
+	want := 3
+	got, err := repo.Count()
+	if err != nil {
+		t.Fatalf("Count returned error: %v", err)
+	}
+
+	if want != got {
+		t.Errorf("want %d, got %d", want, got)
+	}
+}
