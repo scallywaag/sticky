@@ -7,26 +7,6 @@ import (
 	"github.com/highseas-software/sticky/internal/formatter"
 )
 
-type mockRepo struct {
-	count int
-	lists []List
-	err   error
-}
-
-func (m *mockRepo) Count() (int, error) {
-	return m.count, m.err
-}
-
-func (m *mockRepo) GetAll() ([]List, error) {
-	return m.lists, m.err
-}
-
-func (m *mockRepo) Add(name string) (int, error)                 { return 0, nil }
-func (m *mockRepo) Delete(id int) error                          { return nil }
-func (m *mockRepo) GetActive() (*List, error)                    { return nil, nil }
-func (m *mockRepo) SetActive(id int, name string) (*List, error) { return nil, nil }
-func (m *mockRepo) GetId(name string) (int, error)               { return 0, nil }
-
 func TestListsService(t *testing.T) {
 	t.Run("GetAll", func(t *testing.T) {
 		cleared := false
@@ -43,7 +23,7 @@ func TestListsService(t *testing.T) {
 			printed = append(printed, fmt.Sprintf("%s:%d", name, id))
 		}
 
-		mock := &mockRepo{
+		mock := &MockListRepo{
 			count: 1,
 			lists: []List{{Id: 1, Name: "default"}},
 		}
