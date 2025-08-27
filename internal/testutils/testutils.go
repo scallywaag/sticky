@@ -42,3 +42,9 @@ func LoadFixture(t *testing.T, db *sql.DB, sqlContent string) {
 		t.Logf("warning: fixture executed but affected 0 rows")
 	}
 }
+
+func GetRepo[T any](t *testing.T, constructor func(*sql.DB) T) T {
+	t.Helper()
+	db := SetupTestDB(t)
+	return constructor(db)
+}
