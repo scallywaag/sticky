@@ -27,7 +27,7 @@ func (m *mockRepo) GetActive() (*List, error)                    { return nil, n
 func (m *mockRepo) SetActive(id int, name string) (*List, error) { return nil, nil }
 func (m *mockRepo) GetId(name string) (int, error)               { return 0, nil }
 
-func TestService(t *testing.T) {
+func TestListsService(t *testing.T) {
 	t.Run("GetAll", func(t *testing.T) {
 		cleared := false
 		printed := []string{}
