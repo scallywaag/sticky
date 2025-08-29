@@ -25,8 +25,6 @@ func NewDBRepository(db *sql.DB) *DBRepository {
 	return &DBRepository{db: db}
 }
 
-var ErrNoActiveList = errors.New("no active list found")
-
 func (r *DBRepository) GetAll() ([]List, error) {
 	rows, err := r.db.Query(GetAllSQL)
 	if err != nil {
