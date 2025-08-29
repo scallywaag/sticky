@@ -1,6 +1,7 @@
 package lists
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/highseas-software/sticky/internal/formatter"
@@ -61,6 +62,25 @@ func (s *Service) Delete(id int) error {
 	err := s.repo.Delete(id)
 	if err != nil {
 		return fmt.Errorf("failed to delete list: %w", err)
+	}
+
+	_, err = s.repo.GetActive()
+	if err != nil {
+		if errors.Is(err, ErrNoActiveList) {
+			first, err := s.repo.GetFirst()
+			if err != nil {
+				return fmt.Errorf("failed to get first list: %w", err)
+			}
+
+			_, err = s.repo.SetActive(first.Id, first.Name)
+			if err != nil {
+				return fmt.Errorf("failed to set first list as active: %w", err)
+			}
+
+			return nil
+		}
+
+		return fmt.Errorf("failed to get active list: %w", err)
 	}
 
 	err = s.GetAll()

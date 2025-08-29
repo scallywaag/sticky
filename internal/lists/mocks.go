@@ -60,3 +60,7 @@ func (m *MockRepo) GetId(name string) (int, error) {
 	}
 	return 0, fmt.Errorf("list not found: %s", name)
 }
+
+func (m *MockRepo) GetFirst() (*List, error) {
+	return &List{Id: m.lists[0].Id, Name: m.lists[0].Name}, nil
+}

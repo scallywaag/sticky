@@ -22,8 +22,8 @@ const (
 	StateSQL = `
 		CREATE TABLE IF NOT EXISTS state (
 			key TEXT PRIMARY KEY,
-			list_id INTEGER NOT NULL,
-			FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE CASCADE
+			list_id INTEGER,
+			FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE SET NULL
 		);
 	`
 )

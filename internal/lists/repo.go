@@ -2,6 +2,7 @@ package lists
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 )
 
@@ -13,6 +14,7 @@ type Repository interface {
 	SetActive(id int, name string) (*List, error)
 	Count() (int, error)
 	GetId(name string) (int, error)
+	GetFirst() (*List, error)
 }
 
 type DBRepository struct {
@@ -22,6 +24,8 @@ type DBRepository struct {
 func NewDBRepository(db *sql.DB) *DBRepository {
 	return &DBRepository{db: db}
 }
+
+var ErrNoActiveList = errors.New("no active list found")
 
 func (r *DBRepository) GetAll() ([]List, error) {
 	rows, err := r.db.Query(GetAllSQL)
@@ -60,8 +64,8 @@ func (r *DBRepository) Add(name string) (int, error) {
 	return int(id), nil
 }
 
-func (r *DBRepository) Delete(id int) error {
-	result, err := r.db.Exec(DeleteSQL, id)
+func (r *DBRepository) Delete(virtualId int) error {
+	result, err := r.db.Exec(DeleteSQL, virtualId)
 	if err != nil {
 		return fmt.Errorf("exec failed: %w", err)
 	}
@@ -83,7 +87,7 @@ func (r *DBRepository) GetActive() (*List, error) {
 	err := r.db.QueryRow(GetActiveSQL).Scan(&l.Id, &l.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("no active list found: %w", err)
+			return nil, ErrNoActiveList
 		}
 		return nil, fmt.Errorf("query row failed: %w", err)
 	}
@@ -134,4 +138,16 @@ func (r *DBRepository) GetId(name string) (int, error) {
 	}
 
 	return id, nil
+}
+
+func (r *DBRepository) GetFirst() (*List, error) {
+	var l List
+	err := r.db.QueryRow("SELECT id, name FROM lists ORDER BY id LIMIT 1").Scan(&l.Id, &l.Name)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no lists found")
+		}
+		return nil, fmt.Errorf("query failed: %w", err)
+	}
+	return &l, nil
 }

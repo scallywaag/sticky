@@ -82,7 +82,7 @@ func (s *Service) Add(content string, color formatter.Color, status NoteStatus) 
 		return fmt.Errorf("failed to add note: %w", err)
 	}
 
-	s.GetAll(activeList.Name)
+	err = s.GetAll(activeList.Name)
 	if err != nil {
 		return fmt.Errorf("could not retrieve notes list: %w", err)
 	}

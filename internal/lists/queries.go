@@ -45,4 +45,8 @@ const (
 		DELETE FROM lists
 		WHERE id = (SELECT id FROM ordered_lists WHERE virtual_id = ?);
 	`
+
+	GetFirstListSQL = `
+		SELECT id, name FROM lists ORDER BY id LIMIT 1;
+	`
 )
