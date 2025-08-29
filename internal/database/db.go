@@ -39,7 +39,6 @@ func InitDb() *sql.DB {
 	db.Exec("PRAGMA foreign_keys = ON")
 
 	createTables(db)
-	ensureDefaultList(db)
 
 	return db
 }

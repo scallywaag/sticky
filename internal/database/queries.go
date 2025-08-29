@@ -14,7 +14,7 @@ const (
 			content TEXT NOT NULL,
 			color TEXT,
 			status TEXT NOT NULL DEFAULT 'default',
-			list_id INTEGER NOT NULL DEFAULT 1,
+			list_id INTEGER NOT NULL,
 			FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE CASCADE
 		);
 	`
@@ -25,5 +25,11 @@ const (
 			list_id INTEGER,
 			FOREIGN KEY(list_id) REFERENCES lists(id) ON DELETE SET NULL
 		);
+	`
+
+	DefaultStateSQL = `
+		INSERT INTO state(key, list_id)
+		VALUES('active', NULL)
+		ON CONFLICT (key) DO NOTHING;
 	`
 )
