@@ -38,7 +38,11 @@ func main() {
 	case f.List != "":
 		err := notesService.GetAll(f.List)
 		if err != nil {
-			log.Fatal(err)
+			if errors.Is(err, lists.ErrNoLists) {
+				formatter.PrintColored(err.Error(), formatter.Yellow)
+			} else {
+				log.Fatal(err)
+			}
 		}
 	case f.Del != 0:
 		err := notesService.Delete(f.Del)
@@ -72,7 +76,11 @@ func main() {
 	default:
 		err := notesService.GetAll(f.List)
 		if err != nil {
-			log.Fatal(err)
+			if errors.Is(err, lists.ErrNoLists) {
+				formatter.PrintColored(err.Error(), formatter.Yellow)
+			} else {
+				log.Fatal(err)
+			}
 		}
 	}
 }

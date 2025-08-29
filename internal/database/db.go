@@ -7,6 +7,7 @@ import (
 
 	"github.com/highseas-software/sticky/internal/config"
 	"github.com/highseas-software/sticky/internal/env"
+	"github.com/highseas-software/sticky/internal/formatter"
 )
 
 func InitDb() *sql.DB {
@@ -32,7 +33,8 @@ func InitDb() *sql.DB {
 		}
 
 		if !dbExists {
-			fmt.Println("Created 'sticky.db' database at: " + dbPath)
+			message := fmt.Sprintf("Created 'sticky.db' database at: %s", dbPath)
+			formatter.PrintColored(message, formatter.Blue)
 		}
 	}
 

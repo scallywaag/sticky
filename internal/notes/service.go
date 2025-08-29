@@ -1,6 +1,7 @@
 package notes
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/highseas-software/sticky/internal/formatter"
@@ -26,6 +27,9 @@ func (s *Service) GetAll(listName string) error {
 	if listName == "" {
 		activeListId, err = s.listsRepo.GetActive()
 		if err != nil {
+			if errors.Is(err, lists.ErrNoActiveList) {
+				return lists.ErrNoLists
+			}
 			return fmt.Errorf("couldn't retrieve active list: %w", err)
 		}
 	} else {
