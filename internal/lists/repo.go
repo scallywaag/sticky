@@ -2,7 +2,6 @@ package lists
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 )
 
@@ -94,7 +93,7 @@ func (r *DBRepository) GetActive() (*List, error) {
 }
 
 func (r *DBRepository) SetActive(id int, name string) (*List, error) {
-	result, err := r.db.Exec(SetActiveSQL, id)
+	result, err := r.db.Exec(SetActiveSQL, id, id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to set active list: %w", err)
 	}
@@ -105,7 +104,7 @@ func (r *DBRepository) SetActive(id int, name string) (*List, error) {
 	}
 
 	if rowsAffected == 0 {
-		return nil, fmt.Errorf("no list found with id %d", id)
+		return nil, ErrNoRowsAffected
 	}
 
 	l := &List{

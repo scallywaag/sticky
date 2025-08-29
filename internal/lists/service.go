@@ -28,6 +28,10 @@ func (s *Service) GetAll() error {
 		return fmt.Errorf("count failed: %w", err)
 	}
 
+	if count == 0 {
+		return ErrNoLists
+	}
+
 	lists, err := s.repo.GetAll()
 	if err != nil {
 		return fmt.Errorf("failed to get lists: %w", err)
@@ -44,9 +48,20 @@ func (s *Service) GetAll() error {
 }
 
 func (s *Service) Add(name string) error {
-	_, err := s.repo.Add(name)
+	id, err := s.repo.Add(name)
 	if err != nil {
 		return fmt.Errorf("failed to add list: %w", err)
+	}
+	_, err = s.repo.GetActive()
+	if err != nil {
+		if errors.Is(err, ErrNoActiveList) {
+			_, err := s.repo.SetActive(id, name)
+			if err != nil {
+				return fmt.Errorf("failed to set active list: %w", err)
+			}
+		} else {
+			return fmt.Errorf("failed to get active list: %w", err)
+		}
 	}
 
 	err = s.GetAll()
@@ -59,32 +74,31 @@ func (s *Service) Add(name string) error {
 }
 
 func (s *Service) Delete(id int) error {
-	err := s.repo.Delete(id)
-	if err != nil {
+	if err := s.repo.Delete(id); err != nil {
 		return fmt.Errorf("failed to delete list: %w", err)
 	}
 
-	_, err = s.repo.GetActive()
+	_, err := s.repo.GetActive()
 	if err != nil {
 		if errors.Is(err, ErrNoActiveList) {
 			first, err := s.repo.GetFirst()
 			if err != nil {
+				if errors.Is(err, ErrNoRowsAffected) {
+					printColored("\nList successfully deleted. No lists remain.", formatter.Yellow)
+					return nil
+				}
 				return fmt.Errorf("failed to get first list: %w", err)
 			}
 
-			_, err = s.repo.SetActive(first.Id, first.Name)
-			if err != nil {
+			if _, err := s.repo.SetActive(first.Id, first.Name); err != nil {
 				return fmt.Errorf("failed to set first list as active: %w", err)
 			}
-
-			return nil
+		} else {
+			return fmt.Errorf("failed to get active list: %w", err)
 		}
-
-		return fmt.Errorf("failed to get active list: %w", err)
 	}
 
-	err = s.GetAll()
-	if err != nil {
+	if err := s.GetAll(); err != nil {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
 

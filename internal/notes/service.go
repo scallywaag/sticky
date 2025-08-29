@@ -20,11 +20,11 @@ func NewService(repo Repository, listsRepo lists.Repository) *Service {
 }
 
 func (s *Service) GetAll(listName string) error {
-	var activeList *lists.List
+	var activeListId *lists.List
 	var err error
 
 	if listName == "" {
-		activeList, err = s.listsRepo.GetActive()
+		activeListId, err = s.listsRepo.GetActive()
 		if err != nil {
 			return fmt.Errorf("couldn't retrieve active list: %w", err)
 		}
@@ -34,24 +34,24 @@ func (s *Service) GetAll(listName string) error {
 			return fmt.Errorf("couldn't retrieve current list's id: %w", err)
 		}
 
-		activeList, err = s.listsRepo.SetActive(listId, listName)
+		activeListId, err = s.listsRepo.SetActive(listId, listName)
 		if err != nil {
 			return fmt.Errorf("failed to set list as active: %w", err)
 		}
 	}
 
-	count, err := s.repo.Count(activeList.Id)
+	count, err := s.repo.Count(activeListId.Id)
 	if err != nil {
 		return fmt.Errorf("failed to count notes in active list: %w", err)
 	}
 
-	notes, err := s.repo.GetAll(activeList.Id)
+	notes, err := s.repo.GetAll(activeListId.Id)
 	if err != nil {
 		return fmt.Errorf("failed to get notes: %w", err)
 	}
 
 	formatter.ClearScreen()
-	formatter.PrintListHeader(activeList.Name, count)
+	formatter.PrintListHeader(activeListId.Name, count)
 
 	for _, n := range notes {
 		cross := n.Status == StatusCross

@@ -1,11 +1,13 @@
 package main
 
 import (
+	"errors"
 	"log"
 
 	"github.com/highseas-software/sticky/internal/config"
 	"github.com/highseas-software/sticky/internal/database"
 	"github.com/highseas-software/sticky/internal/flags"
+	"github.com/highseas-software/sticky/internal/formatter"
 	"github.com/highseas-software/sticky/internal/lists"
 	"github.com/highseas-software/sticky/internal/notes"
 
@@ -51,7 +53,11 @@ func main() {
 	case f.GetAllLists:
 		err := listsService.GetAll()
 		if err != nil {
-			log.Fatal(err)
+			if errors.Is(err, lists.ErrNoLists) {
+				formatter.PrintColored(err.Error(), formatter.Yellow)
+			} else {
+				log.Fatal(err)
+			}
 		}
 	case f.AddList != "":
 		err := listsService.Add(f.AddList)

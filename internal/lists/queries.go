@@ -13,7 +13,8 @@ const (
 	SetActiveSQL = `
         UPDATE state
         SET list_id = ?
-        WHERE key = 'active';
+        WHERE key = 'active'
+		AND EXISTS (SELECT 1 FROM lists WHERE id = ?);
 	`
 
 	GetIdByNameSQL = `
