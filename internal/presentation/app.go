@@ -46,8 +46,7 @@ func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Ser
 			log.Fatal(err)
 		}
 	case flags.GetAllLists:
-		l, count, err := listsService.GetAll()
-		GetAllLists(l, count, err)
+		getAllLists(listsService)
 
 	case flags.AddList != "":
 		handleAddList(flags.AddList, listsService)
