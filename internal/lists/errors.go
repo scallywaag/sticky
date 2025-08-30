@@ -6,7 +6,7 @@ import (
 
 // service
 var (
-	ErrNoLists = errors.New("You have no lists. Use -list-add or -la to get started.")
+	UserErrNoLists = errors.New("You have no lists. Use -list-add or -la to get started.")
 )
 
 // repo

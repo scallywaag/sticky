@@ -28,7 +28,7 @@ func (s *Service) GetAll(listName string) error {
 		activeListId, err = s.listsRepo.GetActive()
 		if err != nil {
 			if errors.Is(err, lists.ErrNoActiveList) {
-				return lists.ErrNoLists
+				return lists.UserErrNoLists
 			}
 			return fmt.Errorf("couldn't retrieve active list: %w", err)
 		}

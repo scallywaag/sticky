@@ -29,7 +29,7 @@ func (s *Service) GetAll() error {
 	}
 
 	if count == 0 {
-		return ErrNoLists
+		return UserErrNoLists
 	}
 
 	lists, err := s.repo.GetAll()
@@ -75,6 +75,9 @@ func (s *Service) Add(name string) error {
 
 func (s *Service) Delete(id int) error {
 	if err := s.repo.Delete(id); err != nil {
+		if errors.Is(err, ErrNoRowsAffected) {
+			return UserErrNoLists
+		}
 		return fmt.Errorf("failed to delete list: %w", err)
 	}
 
