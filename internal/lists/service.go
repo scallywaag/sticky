@@ -57,10 +57,6 @@ func (s *Service) Add(name string) error {
 		}
 	}
 
-	if err != nil {
-		return fmt.Errorf("failed to get lists: %w", err)
-	}
-
 	return nil
 }
 
@@ -78,8 +74,7 @@ func (s *Service) Delete(id int) error {
 			first, err := s.repo.GetFirst()
 			if err != nil {
 				if errors.Is(err, ErrNoListsExist) {
-					printColored("\nList successfully deleted. No lists remain.", formatter.Yellow)
-					return nil
+					return ErrNoListsExist
 				}
 
 				return fmt.Errorf("failed to get first list: %w", err)
@@ -93,10 +88,5 @@ func (s *Service) Delete(id int) error {
 		}
 	}
 
-	if _, _, err := s.GetAll(); err != nil {
-		return fmt.Errorf("failed to get lists: %w", err)
-	}
-
-	printColored("\nList successfully deleted.", formatter.Yellow)
 	return nil
 }

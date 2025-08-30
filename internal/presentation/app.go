@@ -46,20 +46,14 @@ func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Ser
 			log.Fatal(err)
 		}
 	case flags.GetAllLists:
-		getAllLists(listsService)
+		handleGetAllLists(listsService)
 
 	case flags.AddList != "":
 		handleAddList(flags.AddList, listsService)
 
 	case flags.DelList != 0:
-		err := listsService.Delete(flags.DelList)
-		if err != nil {
-			if errors.Is(err, lists.UserErrNoLists) {
-				formatter.PrintColored(err.Error(), formatter.Yellow)
-			} else {
-				log.Fatal(err)
-			}
-		}
+		handleDeleteList(flags.DelList, listsService)
+
 	default:
 		err := notesService.GetAll(flags.List)
 		if err != nil {
