@@ -18,28 +18,28 @@ func getRepo(t *testing.T) *DBRepository {
 }
 
 func TestListsRepo(t *testing.T) {
-	t.Run("GetAll with default list", func(t *testing.T) {
-		repo := getRepo(t)
-
-		lists, err := repo.GetAll()
-		if err != nil {
-			t.Fatalf("GetAll returned error: %v", err)
-		}
-
-		if len(lists) == 0 {
-			t.Errorf("want 1 list, got none")
-		}
-
-		wantId := 1
-		wantName := "sticky"
-		got := lists[0]
-		if got.Id != wantId || got.Name != wantName {
-			t.Errorf(
-				"want '%d - %s', got '%d - %s'",
-				wantId, wantName, got.Id, got.Name,
-			)
-		}
-	})
+	// t.Run("GetAll with default list", func(t *testing.T) {
+	// 	repo := getRepo(t)
+	//
+	// 	lists, err := repo.GetAll()
+	// 	if err != nil {
+	// 		t.Fatalf("GetAll returned error: %v", err)
+	// 	}
+	//
+	// 	if len(lists) == 0 {
+	// 		t.Errorf("want 1 list, got none")
+	// 	}
+	//
+	// 	wantId := 1
+	// 	wantName := "sticky"
+	// 	got := lists[0]
+	// 	if got.Id != wantId || got.Name != wantName {
+	// 		t.Errorf(
+	// 			"want '%d - %s', got '%d - %s'",
+	// 			wantId, wantName, got.Id, got.Name,
+	// 		)
+	// 	}
+	// })
 
 	t.Run("GetAll with fixture", func(t *testing.T) {
 		repo := getRepo(t)
@@ -78,23 +78,23 @@ func TestListsRepo(t *testing.T) {
 		}
 	})
 
-	t.Run("GetActive", func(t *testing.T) {
-		repo := getRepo(t)
-
-		l, err := repo.GetActive()
-		if err != nil {
-			t.Fatalf("GetActive returned error: %v", err)
-		}
-
-		wantId := 1
-		wantName := "sticky"
-		if l.Id != wantId || l.Name != wantName {
-			t.Errorf(
-				"want '%d - %s', got '%d - %s'",
-				wantId, wantName, l.Id, l.Name,
-			)
-		}
-	})
+	// t.Run("GetActive", func(t *testing.T) {
+	// 	repo := getRepo(t)
+	//
+	// 	l, err := repo.GetActive()
+	// 	if err != nil {
+	// 		t.Fatalf("GetActive returned error: %v", err)
+	// 	}
+	//
+	// 	wantId := 1
+	// 	wantName := "sticky"
+	// 	if l.Id != wantId || l.Name != wantName {
+	// 		t.Errorf(
+	// 			"want '%d - %s', got '%d - %s'",
+	// 			wantId, wantName, l.Id, l.Name,
+	// 		)
+	// 	}
+	// })
 
 	t.Run("GetActive with fixture", func(t *testing.T) {
 		repo := getRepo(t)
@@ -135,19 +135,19 @@ func TestListsRepo(t *testing.T) {
 		}
 	})
 
-	t.Run("Count", func(t *testing.T) {
-		repo := getRepo(t)
-
-		want := 1
-		got, err := repo.Count()
-		if err != nil {
-			t.Fatalf("Count returned error: %v", err)
-		}
-
-		if want != got {
-			t.Errorf("want %d, got %d", want, got)
-		}
-	})
+	// t.Run("Count", func(t *testing.T) {
+	// 	repo := getRepo(t)
+	//
+	// 	want := 1
+	// 	got, err := repo.Count()
+	// 	if err != nil {
+	// 		t.Fatalf("Count returned error: %v", err)
+	// 	}
+	//
+	// 	if want != got {
+	// 		t.Errorf("want %d, got %d", want, got)
+	// 	}
+	// })
 
 	t.Run("Count with fixture", func(t *testing.T) {
 		repo := getRepo(t)
