@@ -22,29 +22,22 @@ var (
 	printColored    = formatter.PrintColored
 )
 
-func (s *Service) GetAll() error {
+func (s *Service) GetAll() ([]List, int, error) {
 	count, err := s.repo.Count()
 	if err != nil {
-		return fmt.Errorf("count failed: %w", err)
+		return nil, 0, fmt.Errorf("count failed: %w", err)
 	}
 
 	if count == 0 {
-		return UserErrNoLists
+		return nil, 0, UserErrNoLists
 	}
 
 	lists, err := s.repo.GetAll()
 	if err != nil {
-		return fmt.Errorf("failed to get lists: %w", err)
+		return nil, 0, fmt.Errorf("failed to get lists: %w", err)
 	}
 
-	clearScreen()
-	printListHeader("lists", count)
-
-	for _, l := range lists {
-		printContent(l.Name, l.Id, count, formatter.Default, false)
-	}
-
-	return nil
+	return lists, count, nil
 }
 
 func (s *Service) Add(name string) error {
@@ -64,7 +57,7 @@ func (s *Service) Add(name string) error {
 		}
 	}
 
-	err = s.GetAll()
+	_, _, err = s.GetAll()
 	if err != nil {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
@@ -102,7 +95,7 @@ func (s *Service) Delete(id int) error {
 		}
 	}
 
-	if err := s.GetAll(); err != nil {
+	if _, _, err := s.GetAll(); err != nil {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
 
