@@ -1,12 +1,10 @@
-package main
+package sticky
 
 import (
 	"errors"
 	"log"
 
-	"github.com/highseas-software/sticky/internal/config"
-	"github.com/highseas-software/sticky/internal/database"
-	"github.com/highseas-software/sticky/internal/flags"
+	f "github.com/highseas-software/sticky/internal/flags"
 	"github.com/highseas-software/sticky/internal/formatter"
 	"github.com/highseas-software/sticky/internal/lists"
 	"github.com/highseas-software/sticky/internal/notes"
@@ -14,29 +12,18 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func main() {
-	config.PrintAppEnv()
-	f := flags.Parse()
-	c := flags.ExtractColor(f)
-	s := flags.GetNoteStatus(f)
-
-	db := database.InitDb()
-	defer db.Close()
-
-	listsRepo := lists.NewDBRepository(db)
-	listsService := lists.NewService(listsRepo)
-
-	notesRepo := notes.NewDBRepository(db)
-	notesService := notes.NewService(notesRepo, listsRepo)
+func InitApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Service) {
+	color := f.ExtractColor(flags)
+	status := f.GetNoteStatus(flags)
 
 	switch {
-	case f.Add != "":
-		err := notesService.Add(f.Add, c, s)
+	case flags.Add != "":
+		err := notesService.Add(flags.Add, color, status)
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.List != "":
-		err := notesService.GetAll(f.List)
+	case flags.List != "":
+		err := notesService.GetAll(flags.List)
 		if err != nil {
 			if errors.Is(err, lists.UserErrNoLists) {
 				formatter.PrintColored(err.Error(), formatter.Yellow)
@@ -44,17 +31,17 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-	case f.Del != 0:
-		err := notesService.Delete(f.Del)
+	case flags.Del != 0:
+		err := notesService.Delete(flags.Del)
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.Mut != 0:
-		err := notesService.Update(f.Mut, c, s)
+	case flags.Mut != 0:
+		err := notesService.Update(flags.Mut, color, status)
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.GetAllLists:
+	case flags.GetAllLists:
 		err := listsService.GetAll()
 		if err != nil {
 			if errors.Is(err, lists.UserErrNoLists) {
@@ -63,13 +50,13 @@ func main() {
 				log.Fatal(err)
 			}
 		}
-	case f.AddList != "":
-		err := listsService.Add(f.AddList)
+	case flags.AddList != "":
+		err := listsService.Add(flags.AddList)
 		if err != nil {
 			log.Fatal(err)
 		}
-	case f.DelList != 0:
-		err := listsService.Delete(f.DelList)
+	case flags.DelList != 0:
+		err := listsService.Delete(flags.DelList)
 		if err != nil {
 			if errors.Is(err, lists.UserErrNoLists) {
 				formatter.PrintColored(err.Error(), formatter.Yellow)
@@ -78,7 +65,7 @@ func main() {
 			}
 		}
 	default:
-		err := notesService.GetAll(f.List)
+		err := notesService.GetAll(flags.List)
 		if err != nil {
 			if errors.Is(err, lists.UserErrNoLists) {
 				formatter.PrintColored(err.Error(), formatter.Yellow)
