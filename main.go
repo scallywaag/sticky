@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/highseas-software/sticky/app"
 	"github.com/highseas-software/sticky/internal/config"
 	"github.com/highseas-software/sticky/internal/database"
 	"github.com/highseas-software/sticky/internal/flags"
 	"github.com/highseas-software/sticky/internal/lists"
 	"github.com/highseas-software/sticky/internal/notes"
+	"github.com/highseas-software/sticky/internal/presentation"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -24,5 +24,5 @@ func main() {
 	notesRepo := notes.NewDBRepository(db)
 	notesService := notes.NewService(notesRepo, listsRepo)
 
-	app.InitApp(f, listsService, notesService)
+	presentation.RunApp(f, listsService, notesService)
 }

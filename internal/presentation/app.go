@@ -1,4 +1,4 @@
-package app
+package presentation
 
 import (
 	"errors"
@@ -12,7 +12,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func InitApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Service) {
+func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Service) {
 	color := f.ExtractColor(flags)
 	status := f.GetNoteStatus(flags)
 
@@ -75,4 +75,3 @@ func InitApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Se
 		}
 	}
 }
-
