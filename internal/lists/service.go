@@ -57,12 +57,10 @@ func (s *Service) Add(name string) error {
 		}
 	}
 
-	_, _, err = s.GetAll()
 	if err != nil {
 		return fmt.Errorf("failed to get lists: %w", err)
 	}
 
-	printColored("\nList successfully added.", formatter.Yellow)
 	return nil
 }
 

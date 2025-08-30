@@ -12,13 +12,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var (
-	clearScreen     = formatter.ClearScreen
-	printListHeader = formatter.PrintListHeader
-	printContent    = formatter.PrintContent
-	printColored    = formatter.PrintColored
-)
-
 func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Service) {
 	color := f.ExtractColor(flags)
 	status := f.GetNoteStatus(flags)
@@ -54,26 +47,19 @@ func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Ser
 		}
 	case flags.GetAllLists:
 		l, count, err := listsService.GetAll()
+		GetAllLists(l, count, err)
 
-		clearScreen()
-		printListHeader("lists", count)
-
-		for _, l := range l {
-			printContent(l.Name, l.Id, count, formatter.Default, false)
-		}
-
-		if err != nil {
-			if errors.Is(err, lists.UserErrNoLists) {
-				formatter.PrintColored(err.Error(), formatter.Yellow)
-			} else {
-				log.Fatal(err)
-			}
-		}
 	case flags.AddList != "":
 		err := listsService.Add(flags.AddList)
 		if err != nil {
 			log.Fatal(err)
 		}
+
+		l, count, err := listsService.GetAll()
+		GetAllLists(l, count, err)
+
+		formatter.PrintColored("\nList successfully added.", formatter.Yellow)
+
 	case flags.DelList != 0:
 		err := listsService.Delete(flags.DelList)
 		if err != nil {
