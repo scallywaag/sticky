@@ -5,8 +5,20 @@ import (
 	"log"
 
 	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/highseas-software/sticky/internal/lists"
 	l "github.com/highseas-software/sticky/internal/lists"
 )
+
+func handleAddList(listName string, listsService *lists.Service) {
+	if err := listsService.Add(listName); err != nil {
+		log.Fatal(err)
+	}
+
+	l, count, err := listsService.GetAll()
+	GetAllLists(l, count, err)
+
+	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
+}
 
 func GetAllLists(lists []l.List, count int, err error) {
 	if err != nil {

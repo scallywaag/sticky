@@ -50,15 +50,7 @@ func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Ser
 		GetAllLists(l, count, err)
 
 	case flags.AddList != "":
-		err := listsService.Add(flags.AddList)
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		l, count, err := listsService.GetAll()
-		GetAllLists(l, count, err)
-
-		formatter.PrintColored("\nList successfully added.", formatter.Yellow)
+		handleAddList(flags.AddList, listsService)
 
 	case flags.DelList != 0:
 		err := listsService.Delete(flags.DelList)
