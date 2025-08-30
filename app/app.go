@@ -1,4 +1,4 @@
-package sticky
+package app
 
 import (
 	"errors"
@@ -75,3 +75,4 @@ func InitApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Se
 		}
 	}
 }
+

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"github.com/highseas-software/sticky/cmd/sticky"
+	"github.com/highseas-software/sticky/app"
 	"github.com/highseas-software/sticky/internal/config"
 	"github.com/highseas-software/sticky/internal/database"
 	"github.com/highseas-software/sticky/internal/flags"
@@ -24,5 +24,5 @@ func main() {
 	notesRepo := notes.NewDBRepository(db)
 	notesService := notes.NewService(notesRepo, listsRepo)
 
-	sticky.InitApp(f, listsService, notesService)
+	app.InitApp(f, listsService, notesService)
 }
