@@ -13,38 +13,15 @@ import (
 )
 
 func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Service) {
-	color := f.ExtractColor(flags)
-	status := f.GetNoteStatus(flags)
-
 	switch {
-	case flags.Add != "":
-		err := notesService.Add(flags.Add, color, status)
-		if err != nil {
-			if errors.Is(err, lists.UserErrNoLists) {
-				formatter.PrintColored(err.Error(), formatter.Yellow)
-			} else {
-				log.Fatal(err)
-			}
-		}
 	case flags.List != "":
-		err := notesService.GetAll(flags.List)
-		if err != nil {
-			if errors.Is(err, lists.UserErrNoLists) || errors.Is(err, lists.UserErrInexistentList) {
-				formatter.PrintColored(err.Error(), formatter.Yellow)
-			} else {
-				log.Fatal(err)
-			}
-		}
+		handleGetAllNotes(flags.List, notesService)
+	case flags.Add != "":
+		handleAddNotes(flags.Add, f.ExtractColor(flags), f.GetNoteStatus(flags), notesService)
 	case flags.Del != 0:
-		err := notesService.Delete(flags.Del)
-		if err != nil {
-			log.Fatal(err)
-		}
+		handleDeleteNotes(flags.Del, notesService)
 	case flags.Mut != 0:
-		err := notesService.Update(flags.Mut, color, status)
-		if err != nil {
-			log.Fatal(err)
-		}
+		handleMutateNotes(flags.Mut, f.ExtractColor(flags), f.GetNoteStatus(flags), notesService)
 	case flags.GetAllLists:
 		handleGetAllLists(listsService)
 
