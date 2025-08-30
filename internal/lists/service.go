@@ -55,7 +55,7 @@ func (s *Service) Add(name string) error {
 	_, err = s.repo.GetActive()
 	if err != nil {
 		if errors.Is(err, ErrNoActiveList) {
-			_, err := s.repo.SetActive(id, name)
+			err := s.repo.SetActive(id)
 			if err != nil {
 				return fmt.Errorf("failed to set active list: %w", err)
 			}
@@ -86,14 +86,15 @@ func (s *Service) Delete(id int) error {
 		if errors.Is(err, ErrNoActiveList) {
 			first, err := s.repo.GetFirst()
 			if err != nil {
-				if errors.Is(err, ErrNoRowsAffected) {
+				if errors.Is(err, ErrNoListsExist) {
 					printColored("\nList successfully deleted. No lists remain.", formatter.Yellow)
 					return nil
 				}
+
 				return fmt.Errorf("failed to get first list: %w", err)
 			}
 
-			if _, err := s.repo.SetActive(first.Id, first.Name); err != nil {
+			if err := s.repo.SetActive(first.Id); err != nil {
 				return fmt.Errorf("failed to set first list as active: %w", err)
 			}
 		} else {
@@ -107,27 +108,4 @@ func (s *Service) Delete(id int) error {
 
 	printColored("\nList successfully deleted.", formatter.Yellow)
 	return nil
-}
-
-func (s *Service) GetActive() (*List, error) {
-	l, err := s.repo.GetActive()
-	if err != nil {
-		return nil, fmt.Errorf("failed to get active list: %w", err)
-	}
-
-	return l, nil
-}
-
-func (s *Service) SetActive(name string) (*List, error) {
-	id, err := s.repo.GetId(name)
-	if err != nil {
-		return nil, fmt.Errorf("could not get list id: %w", err)
-	}
-
-	l, err := s.repo.SetActive(id, name)
-	if err != nil {
-		return nil, fmt.Errorf("could not set list as active: %w", err)
-	}
-
-	return l, nil
 }

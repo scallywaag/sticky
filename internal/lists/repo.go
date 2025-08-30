@@ -10,7 +10,7 @@ type Repository interface {
 	Add(name string) (int, error)
 	Delete(id int) error
 	GetActive() (*List, error)
-	SetActive(id int, name string) (*List, error)
+	SetActive(id int) error
 	Count() (int, error)
 	GetId(name string) (int, error)
 	GetFirst() (*List, error)
@@ -92,26 +92,22 @@ func (r *DBRepository) GetActive() (*List, error) {
 	return l, nil
 }
 
-func (r *DBRepository) SetActive(id int, name string) (*List, error) {
+func (r *DBRepository) SetActive(id int) error {
 	result, err := r.db.Exec(SetActiveSQL, id, id)
 	if err != nil {
-		return nil, fmt.Errorf("failed to set active list: %w", err)
+		return fmt.Errorf("failed to set active list: %w", err)
 	}
 
 	rowsAffected, err := result.RowsAffected()
 	if err != nil {
-		return nil, fmt.Errorf("failed to get affected rows: %w", err)
+		return fmt.Errorf("failed to get affected rows: %w", err)
 	}
 
 	if rowsAffected == 0 {
-		return nil, ErrNoRowsAffected
+		return ErrNoRowsAffected
 	}
 
-	l := &List{
-		Id:   id,
-		Name: name,
-	}
-	return l, nil
+	return nil
 }
 
 func (r *DBRepository) Count() (int, error) {
@@ -129,7 +125,7 @@ func (r *DBRepository) GetId(name string) (int, error) {
 	err := r.db.QueryRow(GetIdByNameSQL, name).Scan(&id)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return 0, fmt.Errorf("list %q does not exist", name)
+			return 0, ErrListInexistent
 		}
 		return 0, fmt.Errorf("failed to query list: %w", err)
 	}
@@ -142,7 +138,7 @@ func (r *DBRepository) GetFirst() (*List, error) {
 	err := r.db.QueryRow("SELECT id, name FROM lists ORDER BY id LIMIT 1").Scan(&l.Id, &l.Name)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			return nil, fmt.Errorf("no lists found")
+			return nil, ErrNoListsExist
 		}
 		return nil, fmt.Errorf("query failed: %w", err)
 	}

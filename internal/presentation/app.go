@@ -20,12 +20,16 @@ func RunApp(flags *f.Flags, listsService *lists.Service, notesService *notes.Ser
 	case flags.Add != "":
 		err := notesService.Add(flags.Add, color, status)
 		if err != nil {
-			log.Fatal(err)
+			if errors.Is(err, lists.UserErrNoLists) {
+				formatter.PrintColored(err.Error(), formatter.Yellow)
+			} else {
+				log.Fatal(err)
+			}
 		}
 	case flags.List != "":
 		err := notesService.GetAll(flags.List)
 		if err != nil {
-			if errors.Is(err, lists.UserErrNoLists) {
+			if errors.Is(err, lists.UserErrNoLists) || errors.Is(err, lists.UserErrInexistentList) {
 				formatter.PrintColored(err.Error(), formatter.Yellow)
 			} else {
 				log.Fatal(err)

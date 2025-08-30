@@ -21,11 +21,11 @@ func NewService(repo Repository, listsRepo lists.Repository) *Service {
 }
 
 func (s *Service) GetAll(listName string) error {
-	var activeListId *lists.List
+	var activeList *lists.List
 	var err error
 
 	if listName == "" {
-		activeListId, err = s.listsRepo.GetActive()
+		activeList, err = s.listsRepo.GetActive()
 		if err != nil {
 			if errors.Is(err, lists.ErrNoActiveList) {
 				return lists.UserErrNoLists
@@ -35,27 +35,32 @@ func (s *Service) GetAll(listName string) error {
 	} else {
 		listId, err := s.listsRepo.GetId(listName)
 		if err != nil {
+			if errors.Is(err, lists.ErrListInexistent) {
+				return lists.UserErrInexistentList
+			}
 			return fmt.Errorf("couldn't retrieve current list's id: %w", err)
 		}
 
-		activeListId, err = s.listsRepo.SetActive(listId, listName)
+		err = s.listsRepo.SetActive(listId)
 		if err != nil {
 			return fmt.Errorf("failed to set list as active: %w", err)
 		}
+
+		activeList = &lists.List{Id: listId, Name: listName}
 	}
 
-	count, err := s.repo.Count(activeListId.Id)
+	count, err := s.repo.Count(activeList.Id)
 	if err != nil {
 		return fmt.Errorf("failed to count notes in active list: %w", err)
 	}
 
-	notes, err := s.repo.GetAll(activeListId.Id)
+	notes, err := s.repo.GetAll(activeList.Id)
 	if err != nil {
 		return fmt.Errorf("failed to get notes: %w", err)
 	}
 
 	formatter.ClearScreen()
-	formatter.PrintListHeader(activeListId.Name, count)
+	formatter.PrintListHeader(activeList.Name, count)
 
 	for _, n := range notes {
 		cross := n.Status == StatusCross
@@ -68,7 +73,10 @@ func (s *Service) GetAll(listName string) error {
 func (s *Service) Add(content string, color formatter.Color, status NoteStatus) error {
 	activeList, err := s.listsRepo.GetActive()
 	if err != nil {
-		return fmt.Errorf("failed to get active list: %w", err)
+		if errors.Is(err, lists.ErrNoActiveList) {
+			return lists.UserErrNoLists
+		}
+		return fmt.Errorf("couldn't retrieve active list: %w", err)
 	}
 
 	c := color
