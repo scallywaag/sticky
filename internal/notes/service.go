@@ -71,16 +71,7 @@ func (s *Service) Add(content string, color formatter.Color, status NoteStatus) 
 		return fmt.Errorf("couldn't retrieve active list: %w", err)
 	}
 
-	c := color
-	if c == "" {
-		c = formatter.Default
-	}
-
-	x := status
-	if x == "" {
-		x = StatusDefault
-	}
-	n := &Note{Content: content, Color: c, Status: x}
+	n := &Note{Content: content, Color: defaultColor(color), Status: defaultStatus(status)}
 	err = s.repo.Add(n, activeList.Id)
 	if err != nil {
 		return fmt.Errorf("failed to add note: %w", err)
@@ -103,7 +94,7 @@ func (s *Service) Delete(id int) error {
 
 	err = s.repo.Delete(id, activeList.Id)
 	if err != nil {
-		return fmt.Errorf("failed to get delete note: %w", err)
+		return fmt.Errorf("failed to delete note: %w", err)
 	}
 
 	_, _, _, err = s.GetAll(activeList.Name)

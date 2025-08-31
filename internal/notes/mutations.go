@@ -21,3 +21,17 @@ func toggleStatus(current NoteStatus, newStatus NoteStatus) NoteStatus {
 	}
 	return newStatus
 }
+
+func defaultColor(c formatter.Color) formatter.Color {
+	if c == "" {
+		return formatter.Default
+	}
+	return c
+}
+
+func defaultStatus(s NoteStatus) NoteStatus {
+	if s == "" {
+		return StatusDefault
+	}
+	return s
+}
