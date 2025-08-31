@@ -10,13 +10,22 @@ import (
 )
 
 func handleGetAllNotes(listName string, notesService *n.Service) {
-	err := notesService.GetAll(listName)
+	notes, count, listName, err := notesService.GetAll(listName)
+
 	if err != nil {
 		if errors.Is(err, l.UserErrNoLists) || errors.Is(err, l.UserErrInexistentList) {
 			f.PrintColored(err.Error(), f.Yellow)
 		} else {
 			log.Fatal(err)
 		}
+	}
+
+	f.ClearScreen()
+	f.PrintListHeader(listName, count)
+
+	for _, note := range notes {
+		cross := note.Status == n.StatusCross
+		f.PrintContent(note.Content, note.Id, count, note.Color, cross)
 	}
 }
 
