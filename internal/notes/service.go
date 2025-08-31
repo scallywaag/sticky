@@ -62,28 +62,22 @@ func (s *Service) GetAll(listName string) ([]Note, int, string, error) {
 	return notes, count, activeList.Name, nil
 }
 
-func (s *Service) Add(content string, color formatter.Color, status NoteStatus) error {
+func (s *Service) Add(content string, color formatter.Color, status NoteStatus) (string, error) {
 	activeList, err := s.listsRepo.GetActive()
 	if err != nil {
 		if errors.Is(err, lists.ErrNoActiveList) {
-			return lists.UserErrNoLists
+			return "", lists.UserErrNoLists
 		}
-		return fmt.Errorf("couldn't retrieve active list: %w", err)
+		return "", fmt.Errorf("couldn't retrieve active list: %w", err)
 	}
 
 	n := &Note{Content: content, Color: defaultColor(color), Status: defaultStatus(status)}
 	err = s.repo.Add(n, activeList.Id)
 	if err != nil {
-		return fmt.Errorf("failed to add note: %w", err)
+		return "", fmt.Errorf("failed to add note: %w", err)
 	}
 
-	_, _, _, err = s.GetAll(activeList.Name)
-	if err != nil {
-		return fmt.Errorf("could not retrieve notes list: %w", err)
-	}
-
-	formatter.PrintColored("\nNote successfully added.", formatter.Yellow)
-	return nil
+	return activeList.Name, nil
 }
 
 func (s *Service) Delete(id int) error {

@@ -31,7 +31,7 @@ func handleGetAllNotes(listName string, notesService *n.Service) {
 }
 
 func handleAddNotes(content string, color f.Color, status n.NoteStatus, notesService *n.Service) {
-	err := notesService.Add(content, color, status)
+	listName, err := notesService.Add(content, color, status)
 	if err != nil {
 		if errors.Is(err, l.UserErrNoLists) {
 			f.PrintColored(err.Error(), f.Yellow)
@@ -40,6 +40,10 @@ func handleAddNotes(content string, color f.Color, status n.NoteStatus, notesSer
 			log.Fatal(err)
 		}
 	}
+
+	handleGetAllNotes(listName, notesService)
+
+	f.PrintColored("\nNote successfully added.", f.Yellow)
 }
 
 func handleDeleteNotes(id int, notesService *n.Service) {
