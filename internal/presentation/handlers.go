@@ -15,6 +15,7 @@ func handleGetAllNotes(listName string, notesService *n.Service) {
 	if err != nil {
 		if errors.Is(err, l.UserErrNoLists) || errors.Is(err, l.UserErrInexistentList) {
 			f.PrintColored(err.Error(), f.Yellow)
+			return
 		} else {
 			log.Fatal(err)
 		}
@@ -34,6 +35,7 @@ func handleAddNotes(content string, color f.Color, status n.NoteStatus, notesSer
 	if err != nil {
 		if errors.Is(err, l.UserErrNoLists) {
 			f.PrintColored(err.Error(), f.Yellow)
+			return
 		} else {
 			log.Fatal(err)
 		}
@@ -59,6 +61,7 @@ func handleGetAllLists(listsService *l.Service) {
 	if err != nil {
 		if errors.Is(err, l.UserErrNoLists) {
 			f.PrintColored(err.Error(), f.Yellow)
+			return
 		} else {
 			log.Fatal(err)
 		}
