@@ -5,6 +5,12 @@ import (
 	"fmt"
 )
 
+type ActiveListRepo interface {
+	GetActive() (*List, error)
+	SetActive(id int) error
+	GetId(name string) (int, error)
+}
+
 type Repository interface {
 	GetAll() ([]List, error)
 	Add(name string) (int, error)
