@@ -47,10 +47,14 @@ func handleAddNotes(content string, color f.Color, status n.NoteStatus, notesSer
 }
 
 func handleDeleteNotes(id int, notesService *n.Service) {
-	err := notesService.Delete(id)
+	listName, err := notesService.Delete(id)
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	handleGetAllNotes(listName, notesService)
+
+	f.PrintColored("\nNote successfully deleted.", f.Yellow)
 }
 
 func handleMutateNotes(id int, color f.Color, status n.NoteStatus, notesService *n.Service) {

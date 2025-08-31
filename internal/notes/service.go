@@ -80,24 +80,18 @@ func (s *Service) Add(content string, color formatter.Color, status NoteStatus) 
 	return activeList.Name, nil
 }
 
-func (s *Service) Delete(id int) error {
+func (s *Service) Delete(id int) (string, error) {
 	activeList, err := s.listsRepo.GetActive()
 	if err != nil {
-		return fmt.Errorf("failed to get active list: %w", err)
+		return "", fmt.Errorf("failed to get active list: %w", err)
 	}
 
 	err = s.repo.Delete(id, activeList.Id)
 	if err != nil {
-		return fmt.Errorf("failed to delete note: %w", err)
+		return "", fmt.Errorf("failed to delete note: %w", err)
 	}
 
-	_, _, _, err = s.GetAll(activeList.Name)
-	if err != nil {
-		return fmt.Errorf("could not retrieve notes list: %w", err)
-	}
-
-	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
-	return nil
+	return activeList.Name, nil
 }
 
 func (s *Service) Update(id int, color formatter.Color, status NoteStatus) error {
