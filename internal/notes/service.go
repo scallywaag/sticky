@@ -94,15 +94,15 @@ func (s *Service) Delete(id int) (string, error) {
 	return activeList.Name, nil
 }
 
-func (s *Service) Update(id int, color formatter.Color, status NoteStatus) error {
+func (s *Service) Update(id int, color formatter.Color, status NoteStatus) (string, error) {
 	activeList, err := s.listsRepo.GetActive()
 	if err != nil {
-		return fmt.Errorf("failed to get active list: %w", err)
+		return "", fmt.Errorf("failed to get active list: %w", err)
 	}
 
 	currentColor, currentStatus, err := s.repo.GetMutations(id, activeList.Id)
 	if err != nil {
-		return fmt.Errorf("failed to get existing mutations: %w", err)
+		return "", fmt.Errorf("failed to get existing mutations: %w", err)
 	}
 
 	n := &Note{
@@ -112,14 +112,8 @@ func (s *Service) Update(id int, color formatter.Color, status NoteStatus) error
 	}
 	err = s.repo.Update(n, activeList.Id)
 	if err != nil {
-		return fmt.Errorf("failed to update note: %w", err)
+		return "", fmt.Errorf("failed to update note: %w", err)
 	}
 
-	_, _, _, err = s.GetAll(activeList.Name)
-	if err != nil {
-		return fmt.Errorf("could not retrieve notes list: %w", err)
-	}
-
-	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
-	return nil
+	return activeList.Name, nil
 }
