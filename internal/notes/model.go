@@ -9,6 +9,14 @@ type Note struct {
 	Status  NoteStatus
 }
 
+func NewNote(content string, color formatter.Color, status NoteStatus) *Note {
+	return &Note{
+		Content: content,
+		Color:   defaultColor(color),
+		Status:  defaultStatus(status),
+	}
+}
+
 type NoteStatus string
 
 const (

@@ -71,7 +71,7 @@ func (s *Service) Add(content string, color formatter.Color, status NoteStatus) 
 		return "", fmt.Errorf("couldn't retrieve active list: %w", err)
 	}
 
-	n := &Note{Content: content, Color: defaultColor(color), Status: defaultStatus(status)}
+	n := NewNote(content, color, status)
 	err = s.repo.Add(n, activeList.Id)
 	if err != nil {
 		return "", fmt.Errorf("failed to add note: %w", err)
