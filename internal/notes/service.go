@@ -20,7 +20,13 @@ func NewService(repo Repository, listsRepo lists.ActiveListRepo) *Service {
 	}
 }
 
-func (s *Service) GetAll(listName string) ([]Note, int, string, error) {
+type NotesResult struct {
+	NotesList      []Note
+	NotesCount     int
+	ActiveListName string
+}
+
+func (s *Service) GetAll(listName string) (*NotesResult, error) {
 	var activeList *lists.List
 	var err error
 
@@ -28,22 +34,22 @@ func (s *Service) GetAll(listName string) ([]Note, int, string, error) {
 		activeList, err = s.listsRepo.GetActive()
 		if err != nil {
 			if errors.Is(err, lists.ErrNoActiveList) {
-				return nil, 0, "", lists.UserErrNoLists
+				return nil, lists.UserErrNoLists
 			}
-			return nil, 0, "", fmt.Errorf("couldn't retrieve active list: %w", err)
+			return nil, fmt.Errorf("couldn't retrieve active list: %w", err)
 		}
 	} else {
 		listId, err := s.listsRepo.GetId(listName)
 		if err != nil {
 			if errors.Is(err, lists.ErrListInexistent) {
-				return nil, 0, "", lists.UserErrInexistentList
+				return nil, lists.UserErrInexistentList
 			}
-			return nil, 0, "", fmt.Errorf("couldn't retrieve current list's id: %w", err)
+			return nil, fmt.Errorf("couldn't retrieve current list's id: %w", err)
 		}
 
 		err = s.listsRepo.SetActive(listId)
 		if err != nil {
-			return nil, 0, "", fmt.Errorf("failed to set list as active: %w", err)
+			return nil, fmt.Errorf("failed to set list as active: %w", err)
 		}
 
 		activeList = &lists.List{Id: listId, Name: listName}
@@ -51,15 +57,20 @@ func (s *Service) GetAll(listName string) ([]Note, int, string, error) {
 
 	count, err := s.repo.Count(activeList.Id)
 	if err != nil {
-		return nil, 0, "", fmt.Errorf("failed to count notes in active list: %w", err)
+		return nil, fmt.Errorf("failed to count notes in active list: %w", err)
 	}
 
 	notes, err := s.repo.GetAll(activeList.Id)
 	if err != nil {
-		return nil, 0, "", fmt.Errorf("failed to get notes: %w", err)
+		return nil, fmt.Errorf("failed to get notes: %w", err)
 	}
 
-	return notes, count, activeList.Name, nil
+	res := &NotesResult{
+		NotesList:      notes,
+		NotesCount:     count,
+		ActiveListName: activeList.Name,
+	}
+	return res, nil
 }
 
 func (s *Service) Add(content string, color formatter.Color, status NoteStatus) (string, error) {

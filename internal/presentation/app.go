@@ -20,13 +20,11 @@ func RunApp(f *flags.Flags, listsService *lists.Service, notesService *notes.Ser
 		handleMutateNotes(f.Mut, flags.ExtractColor(f), flags.GetNoteStatus(f), notesService)
 	case f.GetAllLists:
 		handleGetAllLists(listsService)
-
 	case f.AddList != "":
 		handleAddList(f.AddList, listsService)
 
 	case f.DelList != 0:
 		handleDeleteList(f.DelList, listsService)
-
 	default:
 		handleGetAllNotes(f.List, notesService)
 	}

@@ -10,7 +10,7 @@ import (
 )
 
 func handleGetAllNotes(listName string, notesService *notes.Service) {
-	notesList, count, listName, err := notesService.GetAll(listName)
+	res, err := notesService.GetAll(listName)
 
 	if err != nil {
 		if errors.Is(err, lists.UserErrNoLists) || errors.Is(err, lists.UserErrInexistentList) {
@@ -22,11 +22,11 @@ func handleGetAllNotes(listName string, notesService *notes.Service) {
 	}
 
 	formatter.ClearScreen()
-	formatter.PrintListHeader(listName, count)
+	formatter.PrintListHeader(listName, res.NotesCount)
 
-	for _, note := range notesList {
+	for _, note := range res.NotesList {
 		cross := note.Status == notes.StatusCross
-		formatter.PrintContent(note.Content, note.Id, count, note.Color, cross)
+		formatter.PrintContent(note.Content, note.Id, res.NotesCount, note.Color, cross)
 	}
 }
 
