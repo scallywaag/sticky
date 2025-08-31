@@ -4,37 +4,37 @@ import (
 	"errors"
 	"log"
 
-	f "github.com/highseas-software/sticky/internal/formatter"
-	l "github.com/highseas-software/sticky/internal/lists"
-	n "github.com/highseas-software/sticky/internal/notes"
+	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/highseas-software/sticky/internal/lists"
+	"github.com/highseas-software/sticky/internal/notes"
 )
 
-func handleGetAllNotes(listName string, notesService *n.Service) {
-	notes, count, listName, err := notesService.GetAll(listName)
+func handleGetAllNotes(listName string, notesService *notes.Service) {
+	notesList, count, listName, err := notesService.GetAll(listName)
 
 	if err != nil {
-		if errors.Is(err, l.UserErrNoLists) || errors.Is(err, l.UserErrInexistentList) {
-			f.PrintColored(err.Error(), f.Yellow)
+		if errors.Is(err, lists.UserErrNoLists) || errors.Is(err, lists.UserErrInexistentList) {
+			formatter.PrintColored(err.Error(), formatter.Yellow)
 			return
 		} else {
 			log.Fatal(err)
 		}
 	}
 
-	f.ClearScreen()
-	f.PrintListHeader(listName, count)
+	formatter.ClearScreen()
+	formatter.PrintListHeader(listName, count)
 
-	for _, note := range notes {
-		cross := note.Status == n.StatusCross
-		f.PrintContent(note.Content, note.Id, count, note.Color, cross)
+	for _, note := range notesList {
+		cross := note.Status == notes.StatusCross
+		formatter.PrintContent(note.Content, note.Id, count, note.Color, cross)
 	}
 }
 
-func handleAddNotes(content string, color f.Color, status n.NoteStatus, notesService *n.Service) {
+func handleAddNotes(content string, color formatter.Color, status notes.NoteStatus, notesService *notes.Service) {
 	listName, err := notesService.Add(content, color, status)
 	if err != nil {
-		if errors.Is(err, l.UserErrNoLists) {
-			f.PrintColored(err.Error(), f.Yellow)
+		if errors.Is(err, lists.UserErrNoLists) {
+			formatter.PrintColored(err.Error(), formatter.Yellow)
 			return
 		} else {
 			log.Fatal(err)
@@ -42,68 +42,64 @@ func handleAddNotes(content string, color f.Color, status n.NoteStatus, notesSer
 	}
 
 	handleGetAllNotes(listName, notesService)
-
-	f.PrintColored("\nNote successfully added.", f.Yellow)
+	formatter.PrintColored("\nNote successfully added.", formatter.Yellow)
 }
 
-func handleDeleteNotes(id int, notesService *n.Service) {
+func handleDeleteNotes(id int, notesService *notes.Service) {
 	listName, err := notesService.Delete(id)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	handleGetAllNotes(listName, notesService)
-
-	f.PrintColored("\nNote successfully deleted.", f.Yellow)
+	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
 }
 
-func handleMutateNotes(id int, color f.Color, status n.NoteStatus, notesService *n.Service) {
+func handleMutateNotes(id int, color formatter.Color, status notes.NoteStatus, notesService *notes.Service) {
 	listName, err := notesService.Update(id, color, status)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	handleGetAllNotes(listName, notesService)
-
-	f.PrintColored("\nNote successfully mutated.", f.Yellow)
+	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
 }
 
-func handleGetAllLists(listsService *l.Service) {
-	lists, count, err := listsService.GetAll()
+func handleGetAllLists(listsService *lists.Service) {
+	allLists, count, err := listsService.GetAll()
 	if err != nil {
-		if errors.Is(err, l.UserErrNoLists) {
-			f.PrintColored(err.Error(), f.Yellow)
+		if errors.Is(err, lists.UserErrNoLists) {
+			formatter.PrintColored(err.Error(), formatter.Yellow)
 			return
 		} else {
 			log.Fatal(err)
 		}
 	}
 
-	f.ClearScreen()
-	f.PrintListHeader("lists", count)
-	for _, l := range lists {
-		f.PrintContent(l.Name, l.Id, count, f.Default, false)
+	formatter.ClearScreen()
+	formatter.PrintListHeader("lists", count)
+	for _, l := range allLists {
+		formatter.PrintContent(l.Name, l.Id, count, formatter.Default, false)
 	}
 }
 
-func handleAddList(listName string, listsService *l.Service) {
+func handleAddList(listName string, listsService *lists.Service) {
 	if err := listsService.Add(listName); err != nil {
 		log.Fatal(err)
 	}
 
 	handleGetAllLists(listsService)
-
-	f.PrintColored("\nList successfully added.", f.Yellow)
+	formatter.PrintColored("\nList successfully added.", formatter.Yellow)
 }
 
-func handleDeleteList(listId int, listsService *l.Service) {
+func handleDeleteList(listId int, listsService *lists.Service) {
 	err := listsService.Delete(listId)
 	if err != nil {
-		if errors.Is(err, l.UserErrNoLists) {
-			f.PrintColored(err.Error(), f.Yellow)
+		if errors.Is(err, lists.UserErrNoLists) {
+			formatter.PrintColored(err.Error(), formatter.Yellow)
 			return
-		} else if errors.Is(err, l.ErrNoListsExist) {
-			f.PrintColored("\nList successfully deleted. No lists remain.", f.Yellow)
+		} else if errors.Is(err, lists.ErrNoListsExist) {
+			formatter.PrintColored("\nList successfully deleted. No lists remain.", formatter.Yellow)
 			return
 		} else {
 			log.Fatal(err)
@@ -111,6 +107,5 @@ func handleDeleteList(listId int, listsService *l.Service) {
 	}
 
 	handleGetAllLists(listsService)
-
-	f.PrintColored("\nList successfully deleted.", f.Yellow)
+	formatter.PrintColored("\nList successfully deleted.", formatter.Yellow)
 }

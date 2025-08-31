@@ -1,33 +1,33 @@
 package presentation
 
 import (
-	f "github.com/highseas-software/sticky/internal/flags"
-	l "github.com/highseas-software/sticky/internal/lists"
-	n "github.com/highseas-software/sticky/internal/notes"
+	"github.com/highseas-software/sticky/internal/flags"
+	"github.com/highseas-software/sticky/internal/lists"
+	"github.com/highseas-software/sticky/internal/notes"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func RunApp(flags *f.Flags, listsService *l.Service, notesService *n.Service) {
+func RunApp(f *flags.Flags, listsService *lists.Service, notesService *notes.Service) {
 	switch {
-	case flags.List != "":
-		handleGetAllNotes(flags.List, notesService)
-	case flags.Add != "":
-		handleAddNotes(flags.Add, f.ExtractColor(flags), f.GetNoteStatus(flags), notesService)
-	case flags.Del != 0:
-		handleDeleteNotes(flags.Del, notesService)
-	case flags.Mut != 0:
-		handleMutateNotes(flags.Mut, f.ExtractColor(flags), f.GetNoteStatus(flags), notesService)
-	case flags.GetAllLists:
+	case f.List != "":
+		handleGetAllNotes(f.List, notesService)
+	case f.Add != "":
+		handleAddNotes(f.Add, flags.ExtractColor(f), flags.GetNoteStatus(f), notesService)
+	case f.Del != 0:
+		handleDeleteNotes(f.Del, notesService)
+	case f.Mut != 0:
+		handleMutateNotes(f.Mut, flags.ExtractColor(f), flags.GetNoteStatus(f), notesService)
+	case f.GetAllLists:
 		handleGetAllLists(listsService)
 
-	case flags.AddList != "":
-		handleAddList(flags.AddList, listsService)
+	case f.AddList != "":
+		handleAddList(f.AddList, listsService)
 
-	case flags.DelList != 0:
-		handleDeleteList(flags.DelList, listsService)
+	case f.DelList != 0:
+		handleDeleteList(f.DelList, listsService)
 
 	default:
-		handleGetAllNotes(flags.List, notesService)
+		handleGetAllNotes(f.List, notesService)
 	}
 }
