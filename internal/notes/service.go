@@ -60,6 +60,10 @@ func (s *Service) GetAll(listName string) (*NotesResult, error) {
 		return nil, fmt.Errorf("failed to count notes in active list: %w", err)
 	}
 
+	if count == 0 {
+		return nil, UserErrNoNotes
+	}
+
 	notes, err := s.repo.GetAll(activeList.Id)
 	if err != nil {
 		return nil, fmt.Errorf("failed to get notes: %w", err)

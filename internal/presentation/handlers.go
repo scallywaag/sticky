@@ -13,7 +13,10 @@ func handleGetAllNotes(listName string, notesService *notes.Service) {
 	res, err := notesService.GetAll(listName)
 
 	if err != nil {
-		if errors.Is(err, lists.UserErrNoLists) || errors.Is(err, lists.UserErrInexistentList) {
+		if errors.Is(
+			err, lists.UserErrNoLists) ||
+			errors.Is(err, lists.UserErrInexistentList) ||
+			errors.Is(err, notes.UserErrNoNotes) {
 			formatter.PrintColored(err.Error(), formatter.Yellow)
 			return
 		} else {
