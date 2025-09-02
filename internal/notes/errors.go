@@ -12,4 +12,5 @@ var (
 // repo
 var (
 	ErrNoRowsAffected = errors.New("no rows affected")
+	ErrNoRowsResult   = errors.New("no rows in result set")
 )

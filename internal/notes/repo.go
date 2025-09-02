@@ -102,6 +102,9 @@ func (r *DBRepository) GetMutations(id, activeListId int) (formatter.Color, Note
 	err := r.db.QueryRow(GetMutationsSQL, activeListId, id).
 		Scan(&currentColor, &currentStatus)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return "", "", ErrNoRowsResult
+		}
 		return "", "", fmt.Errorf("query row failed: %w", err)
 	}
 

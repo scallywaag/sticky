@@ -120,6 +120,9 @@ func (s *Service) Update(id int, color formatter.Color, status NoteStatus) (stri
 
 	currentColor, currentStatus, err := s.repo.GetMutations(id, activeList.Id)
 	if err != nil {
+		if errors.Is(err, ErrNoRowsResult) {
+			return "", UserErrNoNotes
+		}
 		return "", fmt.Errorf("failed to get existing mutations: %w", err)
 	}
 
