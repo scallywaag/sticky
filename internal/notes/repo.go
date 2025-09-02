@@ -14,6 +14,7 @@ type Repository interface {
 	Update(note *Note, activeListId int) error
 	GetMutations(id, activeListId int) (formatter.Color, NoteStatus, error)
 	Count(id int) (int, error)
+	CheckNotesExist() (bool, error)
 }
 
 type DBRepository struct {
@@ -118,4 +119,13 @@ func (r *DBRepository) Count(id int) (int, error) {
 		return 0, fmt.Errorf("query row failed: %w", err)
 	}
 	return count, nil
+}
+
+func (r *DBRepository) CheckNotesExist() (bool, error) {
+	var exists bool
+	err := r.db.QueryRow("SELECT EXISTS (SELECT 1 FROM notes)").Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("query row failed: %w", err)
+	}
+	return exists, nil
 }

@@ -65,7 +65,7 @@ func handleDeleteNotes(id int, notesService *notes.Service) {
 func handleMutateNotes(id int, color formatter.Color, status notes.NoteStatus, notesService *notes.Service) {
 	listName, err := notesService.Update(id, color, status)
 	if err != nil {
-		if errors.Is(err, notes.UserErrNoNotes) {
+		if errors.Is(err, notes.UserErrNoNotes) || errors.Is(err, notes.UserErrInvalidMut) {
 			formatter.PrintColored(err.Error(), formatter.Yellow)
 			return
 		}
