@@ -51,6 +51,10 @@ func handleAddNotes(content string, color formatter.Color, status notes.NoteStat
 func handleDeleteNotes(id int, notesService *notes.Service) {
 	listName, err := notesService.Delete(id)
 	if err != nil {
+		if errors.Is(err, notes.UserErrNoNotes) {
+			formatter.PrintColored(err.Error(), formatter.Yellow)
+			return
+		}
 		log.Fatal(err)
 	}
 

@@ -103,6 +103,9 @@ func (s *Service) Delete(id int) (string, error) {
 
 	err = s.repo.Delete(id, activeList.Id)
 	if err != nil {
+		if errors.Is(err, ErrNoRowsAffected) {
+			return "", UserErrNoNotes
+		}
 		return "", fmt.Errorf("failed to delete note: %w", err)
 	}
 

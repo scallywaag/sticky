@@ -71,7 +71,7 @@ func (r *DBRepository) Delete(id int, activeListId int) error {
 	}
 
 	if rowsAffected == 0 {
-		return fmt.Errorf("delete failed: no rows affected")
+		return ErrNoRowsAffected
 	}
 
 	return nil
