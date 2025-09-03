@@ -6,6 +6,7 @@ import (
 
 	"github.com/highseas-software/sticky/internal/formatter"
 	"github.com/highseas-software/sticky/internal/lists"
+	"github.com/highseas-software/sticky/internal/types"
 )
 
 type Service struct {
@@ -77,7 +78,7 @@ func (s *Service) GetAll(listName string) (*NotesResult, error) {
 	return res, nil
 }
 
-func (s *Service) Add(content string, color formatter.Color, status NoteStatus) (string, error) {
+func (s *Service) Add(content string, color formatter.Color, status types.NoteStatus) (string, error) {
 	activeList, err := s.listsRepo.GetActive()
 	if err != nil {
 		if errors.Is(err, lists.ErrNoActiveList) {
@@ -112,7 +113,7 @@ func (s *Service) Delete(id int) (string, error) {
 	return activeList.Name, nil
 }
 
-func (s *Service) Update(id int, color formatter.Color, status NoteStatus) (string, error) {
+func (s *Service) Update(id int, color formatter.Color, status types.NoteStatus) (string, error) {
 	activeList, err := s.listsRepo.GetActive()
 	if err != nil {
 		return "", fmt.Errorf("failed to get active list: %w", err)

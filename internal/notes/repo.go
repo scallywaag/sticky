@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/highseas-software/sticky/internal/types"
 )
 
 type Repository interface {
@@ -12,7 +13,7 @@ type Repository interface {
 	Add(note *Note, activeListId int) error
 	Delete(id, activeListId int) error
 	Update(note *Note, activeListId int) error
-	GetMutations(id, activeListId int) (formatter.Color, NoteStatus, error)
+	GetMutations(id, activeListId int) (formatter.Color, types.NoteStatus, error)
 	Count(id int) (int, error)
 	CheckNotesExist() (bool, error)
 }
@@ -96,9 +97,9 @@ func (r *DBRepository) Update(note *Note, activeListId int) error {
 	return nil
 }
 
-func (r *DBRepository) GetMutations(id, activeListId int) (formatter.Color, NoteStatus, error) {
+func (r *DBRepository) GetMutations(id, activeListId int) (formatter.Color, types.NoteStatus, error) {
 	var currentColor formatter.Color
-	var currentStatus NoteStatus
+	var currentStatus types.NoteStatus
 
 	err := r.db.QueryRow(GetMutationsSQL, activeListId, id).
 		Scan(&currentColor, &currentStatus)
