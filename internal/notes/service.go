@@ -102,11 +102,20 @@ func (s *Service) Delete(id int) (string, error) {
 		return "", fmt.Errorf("failed to get active list: %w", err)
 	}
 
+	if exists, err := s.repo.CheckNotesExist(activeList.Id); err != nil {
+		return "", fmt.Errorf("failed to check notes existence: %w", err)
+	} else if !exists {
+		return "", UserErrNoNotes
+	}
+
+	if noteExists, err := s.repo.CheckNoteExists(id, activeList.Id); err != nil {
+		return "", fmt.Errorf("failed to check note existence: %w", err)
+	} else if !noteExists {
+		return "", UserErrInvalidDel
+	}
+
 	err = s.repo.Delete(id, activeList.Id)
 	if err != nil {
-		if errors.Is(err, ErrNoRowsAffected) {
-			return "", UserErrNoNotes
-		}
 		return "", fmt.Errorf("failed to delete note: %w", err)
 	}
 
@@ -119,7 +128,7 @@ func (s *Service) Update(id int, color formatter.Color, status types.NoteStatus)
 		return "", fmt.Errorf("failed to get active list: %w", err)
 	}
 
-	if exists, err := s.repo.CheckNotesExist(); err != nil {
+	if exists, err := s.repo.CheckNotesExist(activeList.Id); err != nil {
 		return "", fmt.Errorf("failed to check note existence: %w", err)
 	} else if !exists {
 		return "", UserErrNoNotes
