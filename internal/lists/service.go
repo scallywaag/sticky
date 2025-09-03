@@ -45,16 +45,10 @@ func (s *Service) Add(name string) error {
 	if err != nil {
 		return fmt.Errorf("failed to add list: %w", err)
 	}
-	_, err = s.repo.GetActive()
+
+	err = s.repo.SetActive(id)
 	if err != nil {
-		if errors.Is(err, ErrNoActiveList) {
-			err := s.repo.SetActive(id)
-			if err != nil {
-				return fmt.Errorf("failed to set active list: %w", err)
-			}
-		} else {
-			return fmt.Errorf("failed to get active list: %w", err)
-		}
+		return fmt.Errorf("failed to set active list: %w", err)
 	}
 
 	return nil
