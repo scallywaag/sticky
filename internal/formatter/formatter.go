@@ -33,7 +33,7 @@ func PrintListHeader(name string, lastId int) {
 	fmt.Print(padded)
 }
 
-func PrintContent(content string, currId int, lastId int, color Color, cross bool) {
+func PrintContent(content string, currId int, lastId int, color Color, status ContentStatus) {
 	curr := strconv.Itoa(currId)
 	last := strconv.Itoa(lastId)
 
@@ -74,7 +74,7 @@ func PrintContent(content string, currId int, lastId int, color Color, cross boo
 
 	// Print first line with ID + padding
 	if len(lines) > 0 {
-		formatted := formatLine(lines[0], color, cross)
+		formatted := formatLine(lines[0], color, status)
 		newContent := fmt.Sprintf("%s%s%s\n", curr, sep, formatted)
 		padded := leftPad(newContent, padDiff)
 		fmt.Print(padded)
@@ -82,7 +82,7 @@ func PrintContent(content string, currId int, lastId int, color Color, cross boo
 
 	// Print remaining lines, aligned under first
 	for i := 1; i < len(lines); i++ {
-		formatted := formatLine(lines[i], color, cross)
+		formatted := formatLine(lines[i], color, status)
 		newContent := fmt.Sprintf("%s%s\n", sepNewline, formatted)
 		padded := leftPad(newContent, maxPad)
 		fmt.Print(padded)

@@ -71,7 +71,7 @@ func (s *Service) Delete(id int) error {
 }
 
 func (s *Service) GetActiveOrSetFirst() (string, error) {
-	_, err := s.repo.GetActive()
+	l, err := s.repo.GetActive()
 	if err != nil {
 		if errors.Is(err, ErrNoActiveList) {
 			first, err := s.repo.GetFirst()
@@ -90,5 +90,5 @@ func (s *Service) GetActiveOrSetFirst() (string, error) {
 		}
 	}
 
-	return "", nil
+	return l.Name, nil
 }

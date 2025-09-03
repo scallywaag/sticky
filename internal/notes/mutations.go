@@ -2,7 +2,6 @@ package notes
 
 import (
 	"github.com/highseas-software/sticky/internal/formatter"
-	"github.com/highseas-software/sticky/internal/types"
 )
 
 func mutateColor(current formatter.Color, newColor formatter.Color) formatter.Color {
@@ -15,12 +14,12 @@ func mutateColor(current formatter.Color, newColor formatter.Color) formatter.Co
 	return newColor
 }
 
-func toggleStatus(current types.NoteStatus, newStatus types.NoteStatus) types.NoteStatus {
+func toggleStatus(current NoteStatus, newStatus NoteStatus) NoteStatus {
 	if newStatus == "" {
 		return current
 	}
 	if current == newStatus {
-		return types.StatusDefault
+		return StatusDefault
 	}
 	return newStatus
 }
@@ -32,9 +31,9 @@ func defaultColor(newColor formatter.Color) formatter.Color {
 	return newColor
 }
 
-func defaultStatus(newStatus types.NoteStatus) types.NoteStatus {
+func defaultStatus(newStatus NoteStatus) NoteStatus {
 	if newStatus == "" {
-		return types.StatusDefault
+		return StatusDefault
 	}
 	return newStatus
 }

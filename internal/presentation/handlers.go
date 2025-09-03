@@ -7,7 +7,6 @@ import (
 	"github.com/highseas-software/sticky/internal/formatter"
 	"github.com/highseas-software/sticky/internal/lists"
 	"github.com/highseas-software/sticky/internal/notes"
-	"github.com/highseas-software/sticky/internal/types"
 )
 
 func handleGetAllNotes(listName string, notesService *notes.Service) {
@@ -29,12 +28,15 @@ func handleGetAllNotes(listName string, notesService *notes.Service) {
 	formatter.PrintListHeader(res.ActiveListName, res.NotesCount)
 
 	for _, note := range res.NotesList {
-		cross := note.Status == types.StatusCross
-		formatter.PrintContent(note.Content, note.Id, res.NotesCount, note.Color, cross)
+		style := formatter.StatusDefault
+		if note.Status == notes.StatusCross {
+			style = formatter.StatusCross
+		}
+		formatter.PrintContent(note.Content, note.Id, res.NotesCount, note.Color, style)
 	}
 }
 
-func handleAddNotes(content string, color formatter.Color, status types.NoteStatus, notesService *notes.Service) {
+func handleAddNotes(content string, color formatter.Color, status notes.NoteStatus, notesService *notes.Service) {
 	listName, err := notesService.Add(content, color, status)
 	if err != nil {
 		if errors.Is(err, lists.UserErrNoLists) {
@@ -63,7 +65,7 @@ func handleDeleteNotes(id int, notesService *notes.Service) {
 	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
 }
 
-func handleMutateNotes(id int, color formatter.Color, status types.NoteStatus, notesService *notes.Service) {
+func handleMutateNotes(id int, color formatter.Color, status notes.NoteStatus, notesService *notes.Service) {
 	listName, err := notesService.Update(id, color, status)
 	if err != nil {
 		if errors.Is(err, notes.UserErrNoNotes) || errors.Is(err, notes.UserErrInvalidMut) {
@@ -88,10 +90,19 @@ func handleGetAllLists(listsService *lists.Service) {
 		}
 	}
 
+	activeListName, err := listsService.GetActiveOrSetFirst()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	formatter.ClearScreen()
 	formatter.PrintListHeader("lists", count)
 	for _, l := range allLists {
-		formatter.PrintContent(l.Name, l.Id, count, formatter.Default, false)
+		style := formatter.StatusDefault
+		if l.Name == activeListName {
+			style = formatter.StatusBold
+		}
+		formatter.PrintContent(l.Name, l.Id, count, formatter.Default, style)
 	}
 }
 

@@ -10,5 +10,14 @@ const (
 	Default Color = "\x1b[39m"
 
 	Strike = "\x1b[9m"
+	Bold   = "\x1b[1m"
 	Reset  = "\x1b[0m"
+)
+
+type ContentStatus string
+
+const (
+	StatusCross   ContentStatus = "cross"
+	StatusBold    ContentStatus = "bold"
+	StatusDefault ContentStatus = "default"
 )

@@ -2,7 +2,7 @@ package flags
 
 import (
 	"github.com/highseas-software/sticky/internal/formatter"
-	"github.com/highseas-software/sticky/internal/types"
+	"github.com/highseas-software/sticky/internal/notes"
 )
 
 func ExtractColor(f *Flags) formatter.Color {
@@ -20,12 +20,12 @@ func ExtractColor(f *Flags) formatter.Color {
 	}
 }
 
-func GetNoteStatus(f *Flags) types.NoteStatus {
+func GetNoteStatus(f *Flags) notes.NoteStatus {
 	switch {
 	case f.Pin:
-		return types.StatusPin
+		return notes.StatusPin
 	case f.Cross:
-		return types.StatusCross
+		return notes.StatusCross
 	default:
 		return ""
 	}
