@@ -62,25 +62,33 @@ func (s *Service) Delete(id int) error {
 		return fmt.Errorf("failed to delete list: %w", err)
 	}
 
+	_, err := s.GetActiveOrSetFirst()
+	if err != nil {
+		return fmt.Errorf("failed to get or set active list: %w", err)
+	}
+
+	return nil
+}
+
+func (s *Service) GetActiveOrSetFirst() (string, error) {
 	_, err := s.repo.GetActive()
 	if err != nil {
 		if errors.Is(err, ErrNoActiveList) {
 			first, err := s.repo.GetFirst()
 			if err != nil {
 				if errors.Is(err, ErrNoListsExist) {
-					return ErrNoListsExist
+					return "", ErrNoListsExist
 				}
-
-				return fmt.Errorf("failed to get first list: %w", err)
+				return "", fmt.Errorf("failed to get first list: %w", err)
 			}
 
 			if err := s.repo.SetActive(first.Id); err != nil {
-				return fmt.Errorf("failed to set first list as active: %w", err)
+				return "", fmt.Errorf("failed to set first list as active: %w", err)
 			}
 		} else {
-			return fmt.Errorf("failed to get active list: %w", err)
+			return "", fmt.Errorf("failed to get active list: %w", err)
 		}
 	}
 
-	return nil
+	return "", nil
 }
