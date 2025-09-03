@@ -26,7 +26,7 @@ func handleGetAllNotes(listName string, notesService *notes.Service) {
 	}
 
 	formatter.ClearScreen()
-	formatter.PrintListHeader(listName, res.NotesCount)
+	formatter.PrintListHeader(res.ActiveListName, res.NotesCount)
 
 	for _, note := range res.NotesList {
 		cross := note.Status == types.StatusCross
