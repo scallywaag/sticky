@@ -9,18 +9,29 @@ import (
 	"github.com/highseas-software/sticky/internal/notes"
 )
 
-func handleGetAllNotes(listName string, notesService *notes.Service) {
-	res, err := notesService.GetAll(listName)
-
+func fetchAllNotes(listName string, s *notes.Service) (*notes.NotesResult, error) {
+	res, err := s.GetAll(listName)
 	if err != nil {
-		if errors.Is(err, lists.UserErrNoLists) ||
-			errors.Is(err, lists.UserErrInexistentList) ||
-			errors.Is(err, notes.UserErrNoNotes) {
+		switch {
+		case errors.Is(err, lists.UserErrNoLists),
+			errors.Is(err, lists.UserErrInexistentList),
+			errors.Is(err, notes.UserErrNoNotes):
 			formatter.PrintColored(err.Error(), formatter.Yellow)
-			return
-		} else {
-			log.Fatal(err)
+			return nil, nil
+		default:
+			return nil, err
 		}
+	}
+	return res, nil
+}
+
+func handleGetAllNotes(listName string, notesService *notes.Service) {
+	res, err := fetchAllNotes(listName, notesService)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res == nil {
+		return
 	}
 
 	formatter.ClearScreen()
