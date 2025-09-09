@@ -9,8 +9,8 @@ import (
 	"github.com/highseas-software/sticky/internal/notes"
 )
 
-func fetchAllNotes(listName string, s *notes.Service) (*notes.NotesResult, error) {
-	res, err := s.GetAll(listName)
+func fetchAllNotes(listName string, notesService *notes.Service) (*notes.NotesResult, error) {
+	res, err := notesService.GetAll(listName)
 	if err != nil {
 		switch {
 		case errors.Is(err, lists.UserErrNoLists),
@@ -50,7 +50,17 @@ func handleAddNotes(content string, color formatter.Color, status notes.NoteStat
 		}
 	}
 
-	handleGetAllNotes(listName, notesService)
+	res, err := fetchAllNotes(listName, notesService)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res == nil {
+		return
+	}
+
+	formatter.ClearScreen()
+	formatter.PrintListHeader(res.ActiveListName, res.NotesCount)
+	printNotes(res.NotesList, res.NotesCount)
 	formatter.PrintColored("\nNote successfully added.", formatter.Yellow)
 }
 
@@ -64,7 +74,22 @@ func handleDeleteNotes(id int, notesService *notes.Service) {
 		log.Fatal(err)
 	}
 
-	handleGetAllNotes(listName, notesService)
+	res, err := notesService.GetAll(listName)
+	if err != nil {
+		switch {
+		case errors.Is(err, lists.UserErrNoLists),
+			errors.Is(err, lists.UserErrInexistentList):
+			formatter.PrintColored(err.Error(), formatter.Yellow)
+		case errors.Is(err, notes.UserErrNoNotes):
+			formatter.ClearScreen()
+			formatter.PrintColored("Note successfully deleted.", formatter.Yellow)
+			return
+		}
+	}
+
+	formatter.ClearScreen()
+	formatter.PrintListHeader(res.ActiveListName, res.NotesCount)
+	printNotes(res.NotesList, res.NotesCount)
 	formatter.PrintColored("\nNote successfully deleted.", formatter.Yellow)
 }
 
@@ -78,7 +103,17 @@ func handleMutateNotes(id int, color formatter.Color, status notes.NoteStatus, n
 		log.Fatal(err)
 	}
 
-	handleGetAllNotes(listName, notesService)
+	res, err := fetchAllNotes(listName, notesService)
+	if err != nil {
+		log.Fatal(err)
+	}
+	if res == nil {
+		return
+	}
+
+	formatter.ClearScreen()
+	formatter.PrintListHeader(res.ActiveListName, res.NotesCount)
+	printNotes(res.NotesList, res.NotesCount)
 	formatter.PrintColored("\nNote successfully mutated.", formatter.Yellow)
 }
 
