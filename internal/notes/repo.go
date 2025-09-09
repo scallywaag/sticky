@@ -141,13 +141,27 @@ func (r *DBRepository) CheckNotesExist(activeListId int) (bool, error) {
 func (r *DBRepository) CheckNoteExists(id, activeListId int) (bool, error) {
 	var exists bool
 	query := `
+		WITH ordered_notes AS (
+			SELECT
+				ROW_NUMBER() OVER (
+					ORDER BY
+						CASE
+							WHEN status = 'pin' THEN 1
+							WHEN status = 'cross' THEN 3
+							ELSE 2
+						END,
+						id DESC
+				) AS virtual_id
+			FROM notes
+			WHERE list_id = ?
+		)
 		SELECT EXISTS (
 			SELECT 1
-			FROM notes
-			WHERE id = ? AND list_id = ?
-		)
+			FROM ordered_notes
+			WHERE virtual_id = ?
+		);
 	`
-	err := r.db.QueryRow(query, id, activeListId).Scan(&exists)
+	err := r.db.QueryRow(query, activeListId, id).Scan(&exists)
 	if err != nil {
 		return false, fmt.Errorf("query row failed: %w", err)
 	}
