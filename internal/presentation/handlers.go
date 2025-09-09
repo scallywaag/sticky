@@ -13,8 +13,7 @@ func handleGetAllNotes(listName string, notesService *notes.Service) {
 	res, err := notesService.GetAll(listName)
 
 	if err != nil {
-		if errors.Is(
-			err, lists.UserErrNoLists) ||
+		if errors.Is(err, lists.UserErrNoLists) ||
 			errors.Is(err, lists.UserErrInexistentList) ||
 			errors.Is(err, notes.UserErrNoNotes) {
 			formatter.PrintColored(err.Error(), formatter.Yellow)
@@ -26,14 +25,7 @@ func handleGetAllNotes(listName string, notesService *notes.Service) {
 
 	formatter.ClearScreen()
 	formatter.PrintListHeader(res.ActiveListName, res.NotesCount)
-
-	for _, note := range res.NotesList {
-		style := formatter.StatusDefault
-		if note.Status == notes.StatusCross {
-			style = formatter.StatusCross
-		}
-		formatter.PrintContent(note.Content, note.Id, res.NotesCount, note.Color, style)
-	}
+	printNotes(res.NotesList, res.NotesCount)
 }
 
 func handleAddNotes(content string, color formatter.Color, status notes.NoteStatus, notesService *notes.Service) {
@@ -131,4 +123,14 @@ func handleDeleteList(listId int, listsService *lists.Service) {
 
 	handleGetAllLists(listsService)
 	formatter.PrintColored("\nList successfully deleted.", formatter.Yellow)
+}
+
+func printNotes(notesList []notes.Note, notesCount int) {
+	for _, note := range notesList {
+		style := formatter.StatusDefault
+		if note.Status == notes.StatusCross {
+			style = formatter.StatusCross
+		}
+		formatter.PrintContent(note.Content, note.Id, notesCount, note.Color, style)
+	}
 }
