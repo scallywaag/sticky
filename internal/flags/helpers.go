@@ -1,8 +1,8 @@
 package flags
 
 import (
-	"github.com/highseas-software/sticky/internal/formatter"
-	"github.com/highseas-software/sticky/internal/notes"
+	"github.com/scallywaag/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/notes"
 )
 
 func ExtractColor(f *Flags) formatter.Color {

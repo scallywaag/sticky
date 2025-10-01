@@ -3,7 +3,7 @@ package lists
 import (
 	"testing"
 
-	"github.com/highseas-software/sticky/internal/testutils"
+	"github.com/scallywaag/sticky/internal/testutils"
 
 	_ "github.com/mattn/go-sqlite3"
 

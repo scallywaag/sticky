@@ -5,7 +5,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/highseas-software/sticky/internal/env"
+	"github.com/scallywaag/sticky/internal/env"
 )
 
 func getDbPath(appEnv env.StickyEnv) string {

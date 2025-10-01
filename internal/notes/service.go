@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/highseas-software/sticky/internal/formatter"
-	"github.com/highseas-software/sticky/internal/lists"
+	"github.com/scallywaag/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/lists"
 )
 
 type Service struct {

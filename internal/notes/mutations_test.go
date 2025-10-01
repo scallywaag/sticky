@@ -3,7 +3,7 @@ package notes
 import (
 	"testing"
 
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 func TestMutateColor(t *testing.T) {

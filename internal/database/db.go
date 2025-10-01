@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/highseas-software/sticky/internal/config"
-	"github.com/highseas-software/sticky/internal/env"
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/config"
+	"github.com/scallywaag/sticky/internal/env"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 func InitDb() *sql.DB {

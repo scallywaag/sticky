@@ -1,7 +1,7 @@
 package notes
 
 import (
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 type Note struct {

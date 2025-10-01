@@ -4,9 +4,9 @@ import (
 	"errors"
 	"log"
 
-	"github.com/highseas-software/sticky/internal/formatter"
-	"github.com/highseas-software/sticky/internal/lists"
-	"github.com/highseas-software/sticky/internal/notes"
+	"github.com/scallywaag/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/lists"
+	"github.com/scallywaag/sticky/internal/notes"
 )
 
 func fetchAllNotes(listName string, notesService *notes.Service) (*notes.NotesResult, error) {

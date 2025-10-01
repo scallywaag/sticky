@@ -3,8 +3,8 @@ package config
 import (
 	"os"
 
-	"github.com/highseas-software/sticky/internal/env"
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/env"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 func GetAppEnv() env.StickyEnv {

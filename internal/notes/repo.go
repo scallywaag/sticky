@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 type Repository interface {

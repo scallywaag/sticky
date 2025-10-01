@@ -6,7 +6,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/highseas-software/sticky/internal/env"
+	"github.com/scallywaag/sticky/internal/env"
 )
 
 const sep = " - "

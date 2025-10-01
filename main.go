@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/highseas-software/sticky/internal/config"
-	"github.com/highseas-software/sticky/internal/database"
-	"github.com/highseas-software/sticky/internal/flags"
-	"github.com/highseas-software/sticky/internal/lists"
-	"github.com/highseas-software/sticky/internal/notes"
-	"github.com/highseas-software/sticky/internal/presentation"
+	"github.com/scallywaag/sticky/internal/config"
+	"github.com/scallywaag/sticky/internal/database"
+	"github.com/scallywaag/sticky/internal/flags"
+	"github.com/scallywaag/sticky/internal/lists"
+	"github.com/scallywaag/sticky/internal/notes"
+	"github.com/scallywaag/sticky/internal/presentation"
 
 	_ "github.com/mattn/go-sqlite3"
 )

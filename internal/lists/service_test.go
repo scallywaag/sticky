@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 func TestListsService(t *testing.T) {

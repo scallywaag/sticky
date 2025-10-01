@@ -5,8 +5,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/highseas-software/sticky/internal/database"
-	"github.com/highseas-software/sticky/internal/env"
+	"github.com/scallywaag/sticky/internal/database"
+	"github.com/scallywaag/sticky/internal/env"
 )
 
 func SetupTestDB(t *testing.T) *sql.DB {

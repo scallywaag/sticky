@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/highseas-software/sticky/internal/formatter"
+	"github.com/scallywaag/sticky/internal/formatter"
 )
 
 func printUsageMenu() {

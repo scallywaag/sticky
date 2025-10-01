@@ -1,9 +1,9 @@
 package presentation
 
 import (
-	"github.com/highseas-software/sticky/internal/flags"
-	"github.com/highseas-software/sticky/internal/lists"
-	"github.com/highseas-software/sticky/internal/notes"
+	"github.com/scallywaag/sticky/internal/flags"
+	"github.com/scallywaag/sticky/internal/lists"
+	"github.com/scallywaag/sticky/internal/notes"
 
 	_ "github.com/mattn/go-sqlite3"
 )
